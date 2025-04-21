@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatValidatorSample", "MatVa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatValidator", "MatValidator\MatValidator.csproj", "{F279FBC3-CACF-4C00-88B7-237E45520EE1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatValidatorTests", "MatValidatorTests\MatValidatorTests.csproj", "{C0AF5032-5F52-4B72-AD3F-94E52132A4CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{F279FBC3-CACF-4C00-88B7-237E45520EE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F279FBC3-CACF-4C00-88B7-237E45520EE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F279FBC3-CACF-4C00-88B7-237E45520EE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0AF5032-5F52-4B72-AD3F-94E52132A4CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0AF5032-5F52-4B72-AD3F-94E52132A4CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0AF5032-5F52-4B72-AD3F-94E52132A4CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0AF5032-5F52-4B72-AD3F-94E52132A4CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
