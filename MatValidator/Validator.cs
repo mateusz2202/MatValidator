@@ -61,11 +61,11 @@ public interface IValidationRule<TModel>
 public class RuleBuilder<TModel, TProperty> : IValidationRule<TModel>
 {
     private readonly ValidatorBuilder<TModel> _parent;
-    private bool _shouldValidate = true;
+    private Func<TModel, bool> _shouldValidate = _ => true;
     private Func<TModel, bool> _nextCondition = _ => true;
     private readonly Func<TModel, TProperty> _propertyFunc;
     private readonly List<(Func<TModel, bool> Condition, Func<TProperty, ValidError> Validator)> _validators;
-    private readonly string _propertyName;
+    private string _propertyName;
 
     public RuleBuilder(ValidatorBuilder<TModel> parent, Func<TModel, TProperty> propertyFunc, string propertyName)
     {
@@ -77,7 +77,7 @@ public class RuleBuilder<TModel, TProperty> : IValidationRule<TModel>
 
     public void Validate(TModel instance)
     {
-        if (!_shouldValidate) return;
+        if (!_shouldValidate(instance)) return;
 
         var value = _propertyFunc(instance);
 
@@ -92,15 +92,49 @@ public class RuleBuilder<TModel, TProperty> : IValidationRule<TModel>
         }
     }
 
-    public RuleBuilder<TModel, TProperty> When(Func<bool> condition)
+    public RuleBuilder<TModel, TProperty> When(Func<TModel, bool> condition)
     {
-        _shouldValidate = condition();
+        _shouldValidate = condition ?? (_ => true);
+        return this;
+    }
+
+    public RuleBuilder<TModel, TProperty> Unless(Func<TModel, bool> predicate)
+    {
+        _nextCondition = model => !predicate(model);
         return this;
     }
 
     public RuleBuilder<TModel, TProperty> If(Func<TModel, bool> condition)
     {
         _nextCondition = condition ?? (_ => true);
+        return this;
+    }
+
+    public RuleBuilder<TModel, TProperty> OverridePropertyName(string propertName)
+    {
+        _propertyName = propertName;
+        return this;
+    }
+
+    public RuleBuilder<TModel, TProperty> SetValidator(ValidatorBuilder<TProperty> validator)
+    {
+        _validators.Add((
+            _nextCondition,
+            value =>
+            {
+                if (value == null) return null;
+
+                var result = validator.Validate(value);
+
+                foreach (var error in result.ErrorMessages)
+                {
+                    return new ValidError($"{_propertyName}.{error}");
+                }
+
+                return null;
+            }
+        ));
+
         return this;
     }
 
