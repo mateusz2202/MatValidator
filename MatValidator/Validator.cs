@@ -1,21 +1,11 @@
 ﻿using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MatValidator;
 
 public record ValidResult(bool IsValid, List<string> ErrorMessages);
-public record ValidError(bool IsValid)
-{
-    public string ErrorMessage { get; set; } = string.Empty;
-    public ValidError SetMessage(string message)
-    {
-        if (!IsValid)
-            ErrorMessage = message;
+public record ValidError(string ErrorMessage);
 
-        return this;
-    }
-}
 public record Property<T>(string Name, T Value);
 
 public static class Property
@@ -43,8 +33,8 @@ public class ValidatorBuilder
 
     public ValidResult Validate()
     {
-        var isValid = _validErrors.All(x => x.IsValid);
-        var errorMessages = _validErrors.Where(x => !x.IsValid).Select(x => x.ErrorMessage).ToList();
+        var isValid = _validErrors.Count == 0;
+        var errorMessages = _validErrors.Select(x => x.ErrorMessage).ToList();
         return new ValidResult(isValid, errorMessages);
     }
 
@@ -87,7 +77,8 @@ public class RuleBuilder<T>
             ? !string.IsNullOrWhiteSpace(_property.Value as string)
             : _property.Value is not null;
 
-        _parent.AddError(new ValidError(isValid).SetMessage(message ?? $"{_property.Name} is required"));
+        if (!isValid)
+            _parent.AddError(new ValidError(message ?? $"{_property.Name} is required"));
 
         return this;
     }
@@ -97,7 +88,7 @@ public class RuleBuilder<T>
         if (!_shouldValidate) return this;
 
         if (_property.Value is int v && (v > max || v < min))
-            _parent.AddError(new ValidError(false).SetMessage(message ?? $"{_property.Name} must be between {min} and {max} ."));
+            _parent.AddError(new ValidError(message ?? $"{_property.Name} must be between {min} and {max} ."));
 
         return this;
     }
@@ -107,7 +98,7 @@ public class RuleBuilder<T>
         if (!_shouldValidate) return this;
 
         if (_property.Value is int v && v > max)
-            _parent.AddError(new ValidError(false).SetMessage(message ?? $"{property.Name} must be greater {max} ."));
+            _parent.AddError(new ValidError(message ?? $"{property.Name} must be greater {max} ."));
 
         return this;
     }
@@ -117,7 +108,7 @@ public class RuleBuilder<T>
         if (!_shouldValidate) return this;
 
         if (_property.Value is int v && v < min)
-            _parent.AddError(new ValidError(false).SetMessage(message ?? $"{_property.Name} must be less {min} ."));
+            _parent.AddError(new ValidError(message ?? $"{_property.Name} must be less {min} ."));
 
         return this;
     }
@@ -127,7 +118,7 @@ public class RuleBuilder<T>
         if (!_shouldValidate) return this;
 
         if (_property.Value is string str && (str.Length > max || str.Length < min))
-            _parent.AddError(new ValidError(false).SetMessage(message ?? $"{_property.Name} length must be between {min} and {max} characters."));
+            _parent.AddError(new ValidError(message ?? $"{_property.Name} length must be between {min} and {max} characters."));
 
         return this;
     }
@@ -137,7 +128,7 @@ public class RuleBuilder<T>
         if (!_shouldValidate) return this;
 
         if (_property.Value is string str && str.Length > max)
-            _parent.AddError(new ValidError(false).SetMessage(message ?? $"{_property.Name} length must be greater {max} characters."));
+            _parent.AddError(new ValidError(message ?? $"{_property.Name} length must be greater {max} characters."));
 
         return this;
     }
@@ -147,7 +138,7 @@ public class RuleBuilder<T>
         if (!_shouldValidate) return this;
 
         if (_property.Value is string str && str.Length < min)
-            _parent.AddError(new ValidError(false).SetMessage(message ?? $"{_property.Name} length must be less {min} characters."));
+            _parent.AddError(new ValidError(message ?? $"{_property.Name} length must be less {min} characters."));
 
         return this;
     }
@@ -157,7 +148,7 @@ public class RuleBuilder<T>
         if (!_shouldValidate) return this;
 
         if (_property.Value is string str && !str.Contains('@'))
-            _parent.AddError(new ValidError(false).SetMessage(message ?? $"{_property.Name} is not a valid email"));
+            _parent.AddError(new ValidError(message ?? $"{_property.Name} is not a valid email"));
 
         return this;
     }
@@ -167,7 +158,7 @@ public class RuleBuilder<T>
         if (!_shouldValidate) return this;
 
         if (!func(_property.Value))
-            _parent.AddError(new ValidError(false).SetMessage(message ?? $"{_property.Name} is not valid."));
+            _parent.AddError(new ValidError(message ?? $"{_property.Name} is not valid."));
 
         return this;
     }
@@ -177,7 +168,7 @@ public class RuleBuilder<T>
         if (!_shouldValidate) return this;
 
         if (!func.Invoke())
-            _parent.AddError(new ValidError(false).SetMessage(message ?? "Error valid."));
+            _parent.AddError(new ValidError(message ?? "Error valid."));
 
         return this;
     }
