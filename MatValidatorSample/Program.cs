@@ -6,12 +6,17 @@ var user = new User("Jan", "janXd", 200);
 
 var validator = new ValidatorBuilder();
 
-validator.AddRule().NotEmpty(Property.Of(user, x => x.Email));
-validator.AddRule().MinLength(Property.Of(user.FirstName), 2);
-validator.AddRule().IsEmail(Property.Of(user, user => user.Email));
-validator.AddRule().Range(Property.Of(user.Age), 1, 120);
+validator
+    .RuleFor(user, x => x.FirstName)
+    .NotEmpty()
+    .MinLength(2);
 
+validator
+    .RuleFor(user, x => x.Email)
+    .IsEmail();
 
+validator.RuleFor(user, x => x.Age)
+    .Range(1, 120);
 
 
 var result = validator.Validate();
