@@ -62,8 +62,9 @@ public class RuleBuilder<TModel, TProperty> : IValidationRule<TModel>
 {
     private readonly ValidatorBuilder<TModel> _parent;
     private bool _shouldValidate = true;
+    private Func<TModel, bool> _nextCondition = _ => true;
     private readonly Func<TModel, TProperty> _propertyFunc;
-    private readonly List<Action<TProperty>> _validActions;
+    private readonly List<(Func<TModel, bool> Condition, Func<TProperty, ValidError> Validator)> _validators;
     private readonly string _propertyName;
 
     public RuleBuilder(ValidatorBuilder<TModel> parent, Func<TModel, TProperty> propertyFunc, string propertyName)
@@ -71,15 +72,24 @@ public class RuleBuilder<TModel, TProperty> : IValidationRule<TModel>
         _parent = parent;
         _propertyFunc = propertyFunc;
         _propertyName = propertyName;
-        _validActions = [];
+        _validators = [];
     }
 
     public void Validate(TModel instance)
     {
+        if (!_shouldValidate) return;
+
         var value = _propertyFunc(instance);
 
-        foreach (var action in _validActions)
-            action.Invoke(value);
+        foreach (var (condition, validator) in _validators)
+        {
+            if (!condition(instance)) continue;
+
+            var error = validator.Invoke(value);
+
+            if (error is not null)
+                _parent.AddError(error);
+        }
     }
 
     public RuleBuilder<TModel, TProperty> When(Func<bool> condition)
@@ -88,136 +98,192 @@ public class RuleBuilder<TModel, TProperty> : IValidationRule<TModel>
         return this;
     }
 
+    public RuleBuilder<TModel, TProperty> If(Func<TModel, bool> condition)
+    {
+        _nextCondition = condition ?? (_ => true);
+        return this;
+    }
+
 
     public RuleBuilder<TModel, TProperty> NotEmpty(string message = null)
     {
-        if (!_shouldValidate) return this;
+        _validators.Add((
+            _nextCondition,
+            value =>
+            {
+                bool isValid = typeof(TProperty) == typeof(string) ? !string.IsNullOrWhiteSpace(value as string) : value is not null;
 
-        _validActions.Add(value =>
-        {
-            bool isValid = typeof(TProperty) == typeof(string) ? !string.IsNullOrWhiteSpace(value as string) : value is not null;
+                if (!isValid)
+                    return new ValidError(message ?? $"{_propertyName} is required");
 
-            if (!isValid)
-                _parent.AddError(new ValidError(message ?? $"{_propertyName} is required"));
-        });
+                return null;
+            }
+        ));
+
+        _nextCondition = _ => true;
 
         return this;
     }
 
     public RuleBuilder<TModel, TProperty> Range(int min, int max, string message = null)
     {
-        if (!_shouldValidate) return this;
+        _validators.Add((
+            _nextCondition,
+            value =>
+            {
+                if (value is int v && (v > max || v < min))
+                    return new ValidError(message ?? $"{_propertyName} must be between {min} and {max} .");
 
-        _validActions.Add(value =>
-        {
-            if (value is int v && (v > max || v < min))
-                _parent.AddError(new ValidError(message ?? $"{_propertyName} must be between {min} and {max} ."));
-        });
+                return null;
+            }
+        ));
+
+        _nextCondition = _ => true;
 
         return this;
     }
 
     public RuleBuilder<TModel, TProperty> Max(int max, string message = null)
     {
-        if (!_shouldValidate) return this;
+        _validators.Add((
+            _nextCondition,
+            value =>
+            {
+                if (value is int v && v > max)
+                    return new ValidError(message ?? $"{_propertyName} must be greater {max} .");
 
-        _validActions.Add(value =>
-        {
-            if (value is int v && v > max)
-                _parent.AddError(new ValidError(message ?? $"{_propertyName} must be greater {max} ."));
-        });
+                return null;
+            }
+        ));
+
+        _nextCondition = _ => true;
 
         return this;
     }
 
     public RuleBuilder<TModel, TProperty> Min(int min, string message = null)
     {
-        if (!_shouldValidate) return this;
+        _validators.Add((
+            _nextCondition,
+            value =>
+            {
+                if (value is int v && v < min)
+                    return new ValidError(message ?? $"{_propertyName} must be less {min} .");
 
-        _validActions.Add(value =>
-        {
-            if (value is int v && v < min)
-                _parent.AddError(new ValidError(message ?? $"{_propertyName} must be less {min} ."));
-        });
+                return null;
+            }
+        ));
 
+        _nextCondition = _ => true;
 
         return this;
     }
 
     public RuleBuilder<TModel, TProperty> Length(int min, int max, string message = null)
     {
-        if (!_shouldValidate) return this;
-        _validActions.Add(value =>
-        {
-            if (value is string str && (str.Length > max || str.Length < min))
-                _parent.AddError(new ValidError(message ?? $"{_propertyName} length must be between {min} and {max} characters."));
-        });
+        _validators.Add((
+            _nextCondition,
+            value =>
+            {
+                if (value is string str && (str.Length > max || str.Length < min))
+                    return new ValidError(message ?? $"{_propertyName} length must be between {min} and {max} characters.");
 
+                return null;
+            }
+        ));
+
+        _nextCondition = _ => true;
 
         return this;
     }
 
     public RuleBuilder<TModel, TProperty> MaxLength(int max, string message = null)
     {
-        if (!_shouldValidate) return this;
+        _validators.Add((
+            _nextCondition,
+            value =>
+            {
+                if (value is string str && str.Length > max)
+                    return new ValidError(message ?? $"{_propertyName} length must be greater {max} characters.");
 
-        _validActions.Add(value =>
-        {
-            if (value is string str && str.Length > max)
-                _parent.AddError(new ValidError(message ?? $"{_propertyName} length must be greater {max} characters."));
-        });
+                return null;
+            }
+        ));
+
+        _nextCondition = _ => true;
 
         return this;
     }
 
     public RuleBuilder<TModel, TProperty> MinLength(int min, string message = null)
     {
-        if (!_shouldValidate) return this;
+        _validators.Add((
+            _nextCondition,
+            value =>
+            {
+                if (value is string str && str.Length < min)
+                    return new ValidError(message ?? $"{_propertyName} length must be less {min} characters.");
 
-        _validActions.Add(value =>
-        {
-            if (value is string str && str.Length < min)
-                _parent.AddError(new ValidError(message ?? $"{_propertyName} length must be less {min} characters."));
-        });
+                return null;
+            }
+        ));
+
+        _nextCondition = _ => true;
 
         return this;
     }
 
     public RuleBuilder<TModel, TProperty> IsEmail(string message = null)
     {
-        if (!_shouldValidate) return this;
+        _validators.Add((
+            _nextCondition,
+            value =>
+            {
+                if (value is string str && !str.Contains('@'))
+                    return new ValidError(message ?? $"{_propertyName} is not a valid email");
 
-        _validActions.Add(value =>
-        {
-            if (value is string str && !str.Contains('@'))
-                _parent.AddError(new ValidError(message ?? $"{_propertyName} is not a valid email"));
-        });
+                return null;
+            }
+        ));
+
+        _nextCondition = _ => true;
 
         return this;
     }
 
     public RuleBuilder<TModel, TProperty> Custom(Func<TProperty, bool> func, string message = null)
     {
-        if (!_shouldValidate) return this;
 
-        _validActions.Add(value =>
-        {
-            if (!func(value))
-                _parent.AddError(new ValidError(message ?? $"{_propertyName} is not valid."));
-        });
+        _validators.Add((
+            _nextCondition,
+            value =>
+            {
+                if (!func(value))
+                    return new ValidError(message ?? $"{_propertyName} is not valid.");
+
+                return null;
+            }
+        ));
+
+        _nextCondition = _ => true;
 
         return this;
     }
 
     public RuleBuilder<TModel, TProperty> Custom(Func<bool> func, string message = null)
     {
-        if (!_shouldValidate) return this;
+        _validators.Add((
+            _nextCondition,
+            value =>
+            {
+                if (!func.Invoke())
+                    return new ValidError(message ?? "Error valid.");
 
-        _validActions.Add(value =>
-        {
-            if (!func.Invoke())
-                _parent.AddError(new ValidError(message ?? "Error valid."));
-        });
+                return null;
+            }
+        ));
+
+        _nextCondition = _ => true;
 
         return this;
     }
