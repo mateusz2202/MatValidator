@@ -3,6 +3,26 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+    <PackageProjectUrl>https://github.com/mateusz2202/MatValidator</PackageProjectUrl>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>MatValidator</PackageId>
+    <Version>1.0.5</Version>
+    <Authors>MJ</Authors>
+    <Company>Mat</Company>
+    <RepositoryUrl>https://github.com/mateusz2202/MatValidator</RepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
 
 </Project>
