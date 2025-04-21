@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 
 namespace MatValidator;
 
@@ -9,6 +8,11 @@ public record ValidResult(List<string> ErrorMessages)
     public bool IsValid => ErrorMessages.Count == 0;
 }
 public record ValidError(string ErrorMessage);
+
+public abstract class AbstractValidator<TModel> : ValidatorBuilder<TModel>
+{
+
+}
 
 
 public class ValidatorBuilder<TModel>
