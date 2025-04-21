@@ -3,7 +3,10 @@ using System.Runtime.CompilerServices;
 
 namespace MatValidator;
 
-public record ValidResult(bool IsValid, List<string> ErrorMessages);
+public record ValidResult(List<string> ErrorMessages)
+{
+    public bool IsValid => ErrorMessages.Count == 0;
+}
 public record ValidError(string ErrorMessage);
 
 public record Property<T>(string Name, T Value);
@@ -33,9 +36,7 @@ public class ValidatorBuilder
 
     public ValidResult Validate()
     {
-        var isValid = _validErrors.Count == 0;
-        var errorMessages = _validErrors.Select(x => x.ErrorMessage).ToList();
-        return new ValidResult(isValid, errorMessages);
+        return new ValidResult(_validErrors.Select(x => x.ErrorMessage).ToList());
     }
 
     public RuleBuilder<TProp> RuleFor<TModel, TProp>(TModel model, Expression<Func<TModel, TProp>> expr)
