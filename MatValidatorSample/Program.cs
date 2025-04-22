@@ -1,12 +1,14 @@
-﻿
-using MatValidator;
+﻿using MatValidator;
 
-var user = new User("", "janXd", 200, new(""));
+var user = new User((Status)6, "", "janXd", 100, new("infoxd", "22-382", ["note1"]));
 
 Console.WriteLine("------------sample with builder---------");
 
 var validator = new ValidatorBuilder<User>();
 var validator2 = new ValidatorBuilder<UserInfo>();
+
+validator.RuleFor(x => x.Status)
+    .IsInEnum("Invalid status selected.");
 
 validator
     .RuleFor(x => x.FirstName)
@@ -20,12 +22,23 @@ validator
     .IsEmail();
 
 validator.RuleFor(x => x.Age)
+    .GreaterThanOrEqual(100)
+    .GreaterThan(100)
     .Range(1, 120);
 
 validator2
     .RuleFor(x => x.Info)
+    .OneOf("info", "info2")
     .NotEmpty()
     .MinLength(2);
+
+validator2
+    .RuleFor(x => x.ZipCode)
+    .Matches(@"^\d{2}-\d{3}$", "Zip code must match format: 00-000");
+
+validator2.RuleFor(x => x.Notes)
+    .NotEmpty();
+
 
 validator
     .RuleFor(x => x.UserInfo)
@@ -38,15 +51,22 @@ Console.WriteLine(string.Join($",{Environment.NewLine}", result.ErrorMessages));
 
 Console.WriteLine("------------sample with class---------");
 
-var userValidator = new UserValidator();
+//var userValidator = new UserValidator();
 
-result = userValidator.Validate(user);
-Console.WriteLine(result.IsValid);
-Console.WriteLine(string.Join($",{Environment.NewLine}", result.ErrorMessages));
+//result = userValidator.Validate(user);
+//Console.WriteLine(result.IsValid);
+//Console.WriteLine(string.Join($",{Environment.NewLine}", result.ErrorMessages));
 
 
-public record User(string FirstName, string Email, int Age, UserInfo UserInfo);
-public record UserInfo(string Info);
+public record User(Status Status, string FirstName, string Email, int Age, UserInfo UserInfo);
+public record UserInfo(string Info, string ZipCode, List<string> Notes);
+
+public enum Status
+{
+    Pending,
+    Approved,
+    Rejected
+}
 
 
 public class UserValidator : AbstractValidator<User>
@@ -76,5 +96,11 @@ public class UserInfoValidator : AbstractValidator<UserInfo>
         RuleFor(x => x.Info)
             .NotEmpty()
             .MinLength(2);
+
+        RuleFor(x => x.ZipCode)
+            .Matches(@"^\d{2}-\d{3}$", "Zip code must match format: 00-000");
+
+        RuleFor(x => x.Notes)
+            .NotEmpty();
     }
 }
