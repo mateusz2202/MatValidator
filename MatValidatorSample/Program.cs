@@ -1,6 +1,6 @@
 ﻿using MatValidator;
 
-var user = new User((Status)6, "", "janXd", 100, new("infoxd", "22-382", ["note1"]));
+var user = new User((Status)6, "", "janXd", 100, new("infoxd", "22-382", ["note1"], DateTime.Now));
 
 Console.WriteLine("------------sample with builder---------");
 
@@ -39,6 +39,9 @@ validator2
 validator2.RuleFor(x => x.Notes)
     .NotEmpty();
 
+validator2.RuleFor(x => x.DateOfBirthday)
+    .IsSunday();
+
 
 validator
     .RuleFor(x => x.UserInfo)
@@ -59,7 +62,7 @@ Console.WriteLine("------------sample with class---------");
 
 
 public record User(Status Status, string FirstName, string Email, int Age, UserInfo UserInfo);
-public record UserInfo(string Info, string ZipCode, List<string> Notes);
+public record UserInfo(string Info, string ZipCode, List<string> Notes, DateTime DateOfBirthday);
 
 public enum Status
 {
