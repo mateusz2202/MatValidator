@@ -297,4 +297,46 @@ public static class DateTimeRuleBuilderExtensions
 
     public static RuleBuilder<TModel, DateTime> IsSunday<TModel>(this RuleBuilder<TModel, DateTime> builder, string message = null)
         => builder.IsSunday(message);
+
+    public static RuleBuilder<TModel, DateTime?> IsInThePast<TModel>(this RuleBuilder<TModel, DateTime?> builder, string message = null)
+    => builder.IsInThePast(message);
+
+    public static RuleBuilder<TModel, DateTime?> IsInTheFuture<TModel>(this RuleBuilder<TModel, DateTime?> builder, string message = null)
+        => builder.IsInTheFuture(message);
+
+    public static RuleBuilder<TModel, DateTime?> IsBefore<TModel>(this RuleBuilder<TModel, DateTime?> builder, DateTime? date, string message = null)
+        => builder.IsBefore(date, message);
+
+    public static RuleBuilder<TModel, DateTime?> IsAfter<TModel>(this RuleBuilder<TModel, DateTime?> builder, DateTime? date, string message = null)
+        => builder.IsAfter(date, message);
+
+    public static RuleBuilder<TModel, DateTime?> IsBetween<TModel>(this RuleBuilder<TModel, DateTime?> builder, DateTime? start, DateTime? end, string message = null)
+        => builder.IsBetween(start, end, message);
+
+    public static RuleBuilder<TModel, DateTime?> IsOnWeekend<TModel>(this RuleBuilder<TModel, DateTime?> builder, string message = null)
+        => builder.IsOnWeekend(message);
+
+    public static RuleBuilder<TModel, DateTime?> IsToday<TModel>(this RuleBuilder<TModel, DateTime?> builder, string message = null)
+        => builder.IsToday(message);
+
+    public static RuleBuilder<TModel, DateTime?> IsMonday<TModel>(this RuleBuilder<TModel, DateTime?> builder, string message = null)
+        => builder.IsMonday(message);
+
+    public static RuleBuilder<TModel, DateTime?> IsTuesday<TModel>(this RuleBuilder<TModel, DateTime?> builder, string message = null)
+        => builder.IsTuesday(message);
+
+    public static RuleBuilder<TModel, DateTime?> IsWednesday<TModel>(this RuleBuilder<TModel, DateTime?> builder, string message = null)
+        => builder.IsWednesday(message);
+
+    public static RuleBuilder<TModel, DateTime?> IsThursday<TModel>(this RuleBuilder<TModel, DateTime?> builder, string message = null)
+        => builder.IsThursday(message);
+
+    public static RuleBuilder<TModel, DateTime?> IsFriday<TModel>(this RuleBuilder<TModel, DateTime?> builder, string message = null)
+        => builder.IsFriday(message);
+
+    public static RuleBuilder<TModel, DateTime?> IsSaturday<TModel>(this RuleBuilder<TModel, DateTime?> builder, string message = null)
+        => builder.IsSaturday(message);
+
+    public static RuleBuilder<TModel, DateTime?> IsSunday<TModel>(this RuleBuilder<TModel, DateTime?> builder, string message = null)
+        => builder.IsSunday(message);
 }

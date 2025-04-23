@@ -62,7 +62,7 @@ Console.WriteLine(string.Join($",{Environment.NewLine}", result.ErrorMessages));
 
 
 public record User(Status Status, string FirstName, string Email, int? Age, UserInfo UserInfo);
-public record UserInfo(string Info, string ZipCode, List<string> Notes, DateTime DateOfBirthday);
+public record UserInfo(string Info, string ZipCode, List<string> Notes, DateTime? DateOfBirthday);
 
 public enum Status
 {
