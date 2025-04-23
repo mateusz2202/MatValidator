@@ -24,4 +24,7 @@ public static class IntRuleBuilderExtensions
 {
     public static RuleBuilder<TModel, int> Range<TModel>(this RuleBuilder<TModel, int> builder, int min, int max, string message = null)
         => builder.Range(min, max, message);
+
+    public static RuleBuilder<TModel, int?> Range<TModel>(this RuleBuilder<TModel, int?> builder, int min, int max, string message = null)
+        => builder.Range(min, max, message);
 }

@@ -5,11 +5,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <PackageProjectUrl>https://github.com/mateusz2202/MatValidator</PackageProjectUrl>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Nullable>annotations</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
     <PackageId>MatValidator</PackageId>
-    <Version>1.0.8</Version>
+    <Version>1.0.9</Version>
     <Authors>MJ</Authors>
     <Company>Mat</Company>
     <RepositoryUrl>https://github.com/mateusz2202/MatValidator</RepositoryUrl>

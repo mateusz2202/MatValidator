@@ -54,14 +54,14 @@ Console.WriteLine(string.Join($",{Environment.NewLine}", result.ErrorMessages));
 
 Console.WriteLine("------------sample with class---------");
 
-//var userValidator = new UserValidator();
+var userValidator = new UserValidator();
 
-//result = userValidator.Validate(user);
-//Console.WriteLine(result.IsValid);
-//Console.WriteLine(string.Join($",{Environment.NewLine}", result.ErrorMessages));
+result = userValidator.Validate(user);
+Console.WriteLine(result.IsValid);
+Console.WriteLine(string.Join($",{Environment.NewLine}", result.ErrorMessages));
 
 
-public record User(Status Status, string FirstName, string Email, int Age, UserInfo UserInfo);
+public record User(Status Status, string FirstName, string Email, int? Age, UserInfo UserInfo);
 public record UserInfo(string Info, string ZipCode, List<string> Notes, DateTime DateOfBirthday);
 
 public enum Status
