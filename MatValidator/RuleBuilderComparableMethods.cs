@@ -79,20 +79,20 @@ public static class IComparableRuleBuilderExtensions
     public static RuleBuilder<TModel, TProperty> GreaterThan<TModel, TProperty>
         (this RuleBuilder<TModel, TProperty> builder, TProperty threshold, string message = null)
         where TProperty : IComparable
-        => builder.GreaterThan(threshold);
+        => builder.GreaterThan(threshold, message);
 
     public static RuleBuilder<TModel, TProperty> LessThan<TModel, TProperty>
         (this RuleBuilder<TModel, TProperty> builder, TProperty threshold, string message = null)
         where TProperty : IComparable
-        => builder.LessThan(threshold);
+        => builder.LessThan(threshold, message);
 
     public static RuleBuilder<TModel, TProperty> GreaterThanOrEqual<TModel, TProperty>
         (this RuleBuilder<TModel, TProperty> builder, TProperty threshold, string message = null)
         where TProperty : IComparable
-        => builder.GreaterThanOrEqual(threshold);
+        => builder.GreaterThanOrEqual(threshold, message);
 
     public static RuleBuilder<TModel, TProperty> LessThanOrEqual<TModel, TProperty>
         (this RuleBuilder<TModel, TProperty> builder, TProperty threshold, string message = null)
         where TProperty : IComparable
-        => builder.LessThanOrEqual(threshold);
+        => builder.LessThanOrEqual(threshold, message);
 }
