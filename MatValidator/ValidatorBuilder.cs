@@ -20,37 +20,37 @@ public struct ValidatorRule<TModel>
 public class ValidatorBuilder<TModel>
 {
     private readonly List<string> _validErrors;
-    private readonly List<ValidatorRule<TModel>> _validators;
-    private int _ruleId = 0;
+    private readonly Dictionary<int, List<ValidatorRule<TModel>>> _validatorMap;
+    private int _ruleId;
     private readonly Dictionary<int, (IValidationRule<TModel>, Func<TModel, object>)> _rules;
     public ValidatorBuilder()
     {
+        _ruleId = 0;
         _rules = [];
         _validErrors = [];
-        _validators = [];
+        _validatorMap = [];
     }
 
     public ValidResult Validate(TModel model)
     {
-        var result = GetErrors(model).ToList();
-        result.AddRange(_validErrors);
-        return new ValidResult(result);
+        var errors = GetErrors(model).Concat(_validErrors);
+        return new ValidResult([.. errors]);
     }
 
     public IEnumerable<string> GetErrors(TModel model)
     {
-        var rules = _validators.GroupBy(x => x.RuleId).ToList();
-        foreach (var r in rules)
+        foreach (var kvp in _validatorMap)
         {
-            var rule = _rules[r.Key];
+            var rule = _rules[kvp.Key];
             if (!rule.Item1.ShouldValidate(model)) continue;
+
             var value = rule.Item2(model);
-            foreach (var v in r)
+
+            foreach (var v in kvp.Value)
             {
                 if (!v.Condition(model)) continue;
 
-                var error = v.Validator.Invoke(value);
-
+                var error = v.Validator(value);
                 if (error is not null)
                     yield return error;
             }
@@ -80,6 +80,11 @@ public class ValidatorBuilder<TModel>
 
     internal void AddValidator(ValidatorRule<TModel> validator)
     {
-        _validators.Add(validator);
+        if (!_validatorMap.TryGetValue(validator.RuleId, out var list))
+        {
+            list = [];
+            _validatorMap[validator.RuleId] = list;
+        }
+        list.Add(validator);
     }
 }
