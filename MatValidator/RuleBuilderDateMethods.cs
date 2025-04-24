@@ -2,256 +2,129 @@
 public partial class RuleBuilder<TModel, TProperty> : IValidationRule<TModel>
 {
     internal RuleBuilder<TModel, TProperty> IsInThePast(string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is DateTime dt && dt >= DateTime.Now)
-                    return new ValidError(message ?? $"{_propertyName} must be in the past.");
+        => AddValidator(value =>
+        {
+            if (value is DateTime dt && dt >= DateTime.Now)
+                return message ?? $"{_propertyName} must be in the past.";
+            return null;
+        });
 
-                return null;
-            }
-        ));
-
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> IsInTheFuture(string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is DateTime dt && dt <= DateTime.Now)
-                    return new ValidError(message ?? $"{_propertyName} must be in the future.");
+        => AddValidator(value =>
+        {
+            if (value is DateTime dt && dt <= DateTime.Now)
+                return message ?? $"{_propertyName} must be in the future.";
+            return null;
+        });
 
-                return null;
-            }
-        ));
-
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> IsBefore(DateTime date, string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is DateTime dt && dt >= date)
-                    return new ValidError(message ?? $"{_propertyName} must be before {date}.");
+        => AddValidator(value =>
+        {
+            if (value is DateTime dt && dt >= date)
+                return message ?? $"{_propertyName} must be before {date}.";
+            return null;
+        });
 
-                return null;
-            }
-        ));
-
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> IsAfter(DateTime date, string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is DateTime dt && dt <= date)
-                    return new ValidError(message ?? $"{_propertyName} must be after {date}.");
+        => AddValidator(value =>
+        {
+            if (value is DateTime dt && dt <= date)
+                return message ?? $"{_propertyName} must be after {date}.";
+            return null;
+        });
 
-                return null;
-            }
-        ));
-
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> IsBetween(DateTime start, DateTime end, string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is DateTime dt && (dt < start || dt > end))
-                    return new ValidError(message ?? $"{_propertyName} must be between {start} and {end}.");
+        => AddValidator(value =>
+        {
+            if (value is DateTime dt && (dt < start || dt > end))
+                return message ?? $"{_propertyName} must be between {start} and {end}.";
+            return null;
+        });
 
-                return null;
-            }
-        ));
-
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> IsOnWeekend(string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is DateTime dt && !(dt.DayOfWeek == DayOfWeek.Saturday || dt.DayOfWeek == DayOfWeek.Sunday))
-                    return new ValidError(message ?? $"{_propertyName} must be on a weekend.");
+        => AddValidator(value =>
+        {
+            if (value is DateTime dt && !(dt.DayOfWeek == DayOfWeek.Saturday || dt.DayOfWeek == DayOfWeek.Sunday))
+                return message ?? $"{_propertyName} must be on a weekend.";
+            return null;
+        });
 
-                return null;
-            }
-        ));
-
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> IsToday(string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is DateTime dt && dt.Date != DateTime.Now.Date)
-                    return new ValidError(message ?? $"{_propertyName} must be today's date.");
+        => AddValidator(value =>
+        {
+            if (value is DateTime dt && dt.Date != DateTime.Now.Date)
+                return message ?? $"{_propertyName} must be today's date.";
+            return null;
+        });
 
-                return null;
-            }
-        ));
-
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> IsMonday(string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is DateTime dt && dt.DayOfWeek != DayOfWeek.Monday)
-                    return new ValidError(message ?? $"{_propertyName} must be on a Monday.");
+        => AddValidator(value =>
+        {
+            if (value is DateTime dt && dt.DayOfWeek != DayOfWeek.Monday)
+                return message ?? $"{_propertyName} must be on a Monday.";
+            return null;
+        });
 
-                return null;
-            }
-        ));
-
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> IsTuesday(string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is DateTime dt && dt.DayOfWeek != DayOfWeek.Tuesday)
-                    return new ValidError(message ?? $"{_propertyName} must be on a Tuesday.");
+        => AddValidator(value =>
+        {
+            if (value is DateTime dt && dt.DayOfWeek != DayOfWeek.Tuesday)
+                return message ?? $"{_propertyName} must be on a Tuesday.";
+            return null;
+        });
 
-                return null;
-            }
-        ));
-
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> IsWednesday(string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is DateTime dt && dt.DayOfWeek != DayOfWeek.Wednesday)
-                    return new ValidError(message ?? $"{_propertyName} must be on a Wednesday.");
+        => AddValidator(value =>
+        {
+            if (value is DateTime dt && dt.DayOfWeek != DayOfWeek.Wednesday)
+                return message ?? $"{_propertyName} must be on a Wednesday.";
+            return null;
+        });
 
-                return null;
-            }
-        ));
-
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> IsThursday(string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is DateTime dt && dt.DayOfWeek != DayOfWeek.Thursday)
-                    return new ValidError(message ?? $"{_propertyName} must be on a Thursday.");
+        => AddValidator(value =>
+        {
+            if (value is DateTime dt && dt.DayOfWeek != DayOfWeek.Thursday)
+                return message ?? $"{_propertyName} must be on a Thursday.";
+            return null;
+        });
 
-                return null;
-            }
-        ));
-
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> IsFriday(string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is DateTime dt && dt.DayOfWeek != DayOfWeek.Friday)
-                    return new ValidError(message ?? $"{_propertyName} must be on a Friday.");
+        => AddValidator(value =>
+        {
+            if (value is DateTime dt && dt.DayOfWeek != DayOfWeek.Friday)
+                return message ?? $"{_propertyName} must be on a Friday.";
+            return null;
+        });
 
-                return null;
-            }
-        ));
-
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> IsSaturday(string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is DateTime dt && dt.DayOfWeek != DayOfWeek.Saturday)
-                    return new ValidError(message ?? $"{_propertyName} must be on a Saturday.");
+        => AddValidator(value =>
+        {
+            if (value is DateTime dt && dt.DayOfWeek != DayOfWeek.Saturday)
+                return message ?? $"{_propertyName} must be on a Saturday.";
+            return null;
+        });
 
-                return null;
-            }
-        ));
-
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> IsSunday(string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is DateTime dt && dt.DayOfWeek != DayOfWeek.Sunday)
-                    return new ValidError(message ?? $"{_propertyName} must be on a Sunday.");
-
-                return null;
-            }
-        ));
-
-        _nextCondition = _ => true;
-
-        return this;
-    }
+        => AddValidator(value =>
+        {
+            if (value is DateTime dt && dt.DayOfWeek != DayOfWeek.Sunday)
+                return message ?? $"{_propertyName} must be on a Sunday.";
+            return null;
+        });
 }
 
 public static class DateTimeRuleBuilderExtensions

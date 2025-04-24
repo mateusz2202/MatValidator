@@ -4,182 +4,93 @@ namespace MatValidator;
 public partial class RuleBuilder<TModel, TProperty> : IValidationRule<TModel>
 {
     internal RuleBuilder<TModel, TProperty> Length(int min, int max, string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is string str && (str.Length > max || str.Length < min))
-                    return new ValidError(message ?? $"{_propertyName} length must be between {min} and {max} characters.");
+        => AddValidator(value =>
+        {
+            if (value is string str && (str.Length > max || str.Length < min))
+                return message ?? $"{_propertyName} length must be between {min} and {max} characters.";
+            return null;
+        });
 
-                return null;
-            }
-        ));
-
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> MaxLength(int max, string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is string str && str.Length > max)
-                    return new ValidError(message ?? $"{_propertyName} length must be greater {max} characters.");
+        => AddValidator(value =>
+        {
+            if (value is string str && str.Length > max)
+                return message ?? $"{_propertyName} length must be less than {max} characters.";
+            return null;
+        });
 
-                return null;
-            }
-        ));
-
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> MinLength(int min, string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is string str && str.Length < min)
-                    return new ValidError(message ?? $"{_propertyName} length must be less {min} characters.");
+        => AddValidator(value =>
+        {
+            if (value is string str && str.Length < min)
+                return message ?? $"{_propertyName} length must be greater than {min} characters.";
+            return null;
+        });
 
-                return null;
-            }
-        ));
-
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> IsEmail(string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
+            => AddValidator(value =>
             {
                 if (value is string str && !str.Contains('@'))
-                    return new ValidError(message ?? $"{_propertyName} is not a valid email");
-
+                    return message ?? $"{_propertyName} is not a valid email";
                 return null;
-            }
-        ));
+            });
 
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> IsUrl(string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
+            => AddValidator(value =>
             {
                 if (value is string str && !Uri.IsWellFormedUriString(str, UriKind.Absolute))
-                    return new ValidError(message ?? $"{_propertyName} is not a valid URL.");
-
+                    return message ?? $"{_propertyName} is not a valid URL.";
                 return null;
-            }
-        ));
+            });
 
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> IsAlpha(string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
+            => AddValidator(value =>
             {
                 if (value is string str && !str.All(char.IsLetter))
-                    return new ValidError(message ?? $"{_propertyName} must contain only letters.");
-
+                    return message ?? $"{_propertyName} must contain only letters.";
                 return null;
-            }
-        ));
+            });
 
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> IsAlphanumeric(string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
+            => AddValidator(value =>
             {
                 if (value is string str && !str.All(char.IsLetterOrDigit))
-                    return new ValidError(message ?? $"{_propertyName} must be alphanumeric.");
-
+                    return message ?? $"{_propertyName} must be alphanumeric.";
                 return null;
-            }
-        ));
+            });
 
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> StartsWith(string prefix, string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is string str && !str.StartsWith(prefix))
-                    return new ValidError(message ?? $"{_propertyName} must start with '{prefix}'.");
+        => AddValidator(value =>
+        {
+            if (value is string str && !str.StartsWith(prefix))
+                return message ?? $"{_propertyName} must start with '{prefix}'.";
+            return null;
+        });
 
-                return null;
-            }
-        ));
-
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> EndsWith(string suffix, string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is string str && !str.EndsWith(suffix))
-                    return new ValidError(message ?? $"{_propertyName} must end with '{suffix}'.");
+        => AddValidator(value =>
+        {
+            if (value is string str && !str.EndsWith(suffix))
+                return message ?? $"{_propertyName} must end with '{suffix}'.";
+            return null;
+        });
 
-                return null;
-            }
-        ));
-
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> Matches(string pattern, string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is string str && !Regex.IsMatch(str, pattern))
-                    return new ValidError(message ?? $"{_propertyName} is not in the correct format.");
-
-                return null;
-            }
-        ));
-
-        return this;
-    }
+        => AddValidator(value =>
+        {
+            if (value is string str && !Regex.IsMatch(str, pattern))
+                return message ?? $"{_propertyName} is not in the correct format.";
+            return null;
+        });
 }
 
 public static class StringRuleBuilderExtensions

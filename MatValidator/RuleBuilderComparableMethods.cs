@@ -2,76 +2,44 @@
 public partial class RuleBuilder<TModel, TProperty> : IValidationRule<TModel>
 {
     internal RuleBuilder<TModel, TProperty> GreaterThan(TProperty threshold, string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is IComparable comparable && comparable.CompareTo(threshold) <= 0)
-                    return new ValidError(message ?? $"{_propertyName} must be greater than {threshold}.");
+        => AddValidator(value =>
+        {
+            if (value is IComparable comparable && comparable.CompareTo(threshold) <= 0)
+                return message ?? $"{_propertyName} must be greater than {threshold}.";
 
-                return null;
-            }
-        ));
+            return null;
+        });
 
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> LessThan(TProperty threshold, string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is IComparable comparable && comparable.CompareTo(threshold) >= 0)
-                    return new ValidError(message ?? $"{_propertyName} must be less than {threshold}.");
+        => AddValidator(value =>
+        {
+            if (value is IComparable comparable && comparable.CompareTo(threshold) >= 0)
+                return message ?? $"{_propertyName} must be less than {threshold}.";
 
-                return null;
-            }
-        ));
+            return null;
+        });
 
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> GreaterThanOrEqual(TProperty threshold, string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is IComparable comparable && comparable.CompareTo(threshold) < 0)
-                    return new ValidError(message ?? $"{_propertyName} must be greater than or equal to {threshold}.");
+        => AddValidator(value =>
+        {
+            if (value is IComparable comparable && comparable.CompareTo(threshold) < 0)
+                return message ?? $"{_propertyName} must be greater than or equal to {threshold}.";
 
-                return null;
-            }
-        ));
+            return null;
+        });
 
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> LessThanOrEqual(TProperty threshold, string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is IComparable comparable && comparable.CompareTo(threshold) > 0)
-                    return new ValidError(message ?? $"{_propertyName} must be less than or equal to {threshold}.");
+        => AddValidator(value =>
+        {
+            if (value is IComparable comparable && comparable.CompareTo(threshold) > 0)
+                return message ?? $"{_propertyName} must be less than or equal to {threshold}.";
 
-                return null;
-            }
-        ));
+            return null;
+        });
 
-        _nextCondition = _ => true;
-
-        return this;
-    }
 }
 
 public static class IComparableRuleBuilderExtensions

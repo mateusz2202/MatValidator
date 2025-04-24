@@ -2,40 +2,23 @@
 public partial class RuleBuilder<TModel, TProperty> : IValidationRule<TModel>
 {
     internal RuleBuilder<TModel, TProperty> IsTrue(string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is bool b && !b)
-                    return new ValidError(message ?? $"{_propertyName} must be true.");
+        => AddValidator(value =>
+        {
+            if (value is bool b && !b)
+                return message ?? $"{_propertyName} must be true.";
 
-                return null;
-            }
-        ));
+            return null;
+        });
 
-        _nextCondition = _ => true;
-
-        return this;
-    }
 
     internal RuleBuilder<TModel, TProperty> IsFalse(string message = null)
-    {
-        _validators.Add((
-            _nextCondition,
-            value =>
-            {
-                if (value is bool b && b)
-                    return new ValidError(message ?? $"{_propertyName} must be false.");
+        => AddValidator(value =>
+        {
+            if (value is bool b && b)
+                return message ?? $"{_propertyName} must be false.";
 
-                return null;
-            }
-        ));
-
-        _nextCondition = _ => true;
-
-        return this;
-    }
+            return null;
+        });
 }
 
 

@@ -2,40 +2,36 @@
 
 internal interface IValidationRule<TModel>
 {
-    void Validate(TModel instance);
+    Func<TModel, bool> ShouldValidate { get; }
+    Func<TModel, bool> NextCondition { get; }
+    int Id { get; }
 }
 
 public partial class RuleBuilder<TModel, TProperty> : IValidationRule<TModel>
 {
     private readonly ValidatorBuilder<TModel> _parent;
-    private Func<TModel, bool> _shouldValidate = _ => true;
-    private Func<TModel, bool> _nextCondition = _ => true;
-    private readonly Func<TModel, TProperty> _propertyFunc;
-    private readonly List<(Func<TModel, bool> Condition, Func<TProperty, ValidError> Validator)> _validators;
+    public Func<TModel, bool> ShouldValidate { get; private set; } = _ => true;
+    public Func<TModel, bool> NextCondition { get; private set; } = _ => true;
+
+
     private string _propertyName;
 
-    public RuleBuilder(ValidatorBuilder<TModel> parent, Func<TModel, TProperty> propertyFunc, string propertyName)
+    public int Id { get; init; }
+
+
+    public RuleBuilder(ValidatorBuilder<TModel> parent, string propertyName, int id)
     {
         _parent = parent;
-        _propertyFunc = propertyFunc;
         _propertyName = propertyName;
-        _validators = [];
+        Id = id;
     }
 
-    public void Validate(TModel instance)
+    private RuleBuilder<TModel, TProperty> AddValidator(Func<object, string> validator)
     {
-        if (!_shouldValidate(instance)) return;
+        _parent.AddValidator(new ValidatorRule<TModel>(NextCondition, validator, Id));
 
-        var value = _propertyFunc(instance);
+        NextCondition = _ => true;
 
-        foreach (var (condition, validator) in _validators)
-        {
-            if (!condition(instance)) continue;
-
-            var error = validator.Invoke(value);
-
-            if (error is not null)
-                _parent.AddError(error);
-        }
+        return this;
     }
 }
