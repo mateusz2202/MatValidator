@@ -19,9 +19,10 @@ public struct ValidatorRule<TModel>
 
 public class ValidatorBuilder<TModel>
 {
-    private readonly List<IValidationRule<TModel>> _rules;
     private readonly List<string> _validErrors;
     private readonly List<ValidatorRule<TModel>> _validators;
+    private int _ruleId = 0;
+    private readonly Dictionary<int, (IValidationRule<TModel>, Func<TModel, object>)> _rules;
     public ValidatorBuilder()
     {
         _rules = [];
@@ -41,9 +42,9 @@ public class ValidatorBuilder<TModel>
         var rules = _validators.GroupBy(x => x.RuleId).ToList();
         foreach (var r in rules)
         {
-            var rule = _rules.FirstOrDefault(x => x.Id == r.Key);
-            if (!rule.ShouldValidate(model)) continue;
-            var value = _funcValueRule[r.Key](model);
+            var rule = _rules[r.Key];
+            if (!rule.Item1.ShouldValidate(model)) continue;
+            var value = rule.Item2(model);
             foreach (var v in r)
             {
                 if (!v.Condition(model)) continue;
@@ -55,8 +56,7 @@ public class ValidatorBuilder<TModel>
             }
         }
     }
-    private int _ruleId = 0;
-    private Dictionary<int, Func<TModel, object>> _funcValueRule = [];
+
 
     public RuleBuilder<TModel, TProperty> RuleFor<TProperty>(Expression<Func<TModel, TProperty>> expression)
     {
@@ -66,10 +66,9 @@ public class ValidatorBuilder<TModel>
         var propertyName = memberExpr.Member.Name;
         var func = expression.Compile();
 
-        _funcValueRule.Add(_ruleId, model => func(model)!);
-        var rule = new RuleBuilder<TModel, TProperty>(this, propertyName, _ruleId++);
+        var rule = new RuleBuilder<TModel, TProperty>(this, propertyName, _ruleId);
 
-        _rules.Add(rule);
+        _rules.Add(_ruleId++, (rule, model => func(model)!));
 
         return rule;
     }
