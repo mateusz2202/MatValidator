@@ -16,13 +16,24 @@ public struct ValidatorRule<TModel>
         RuleId = ruleId;
     }
 }
+public readonly struct ValidationRuleEntry<TModel>
+{
+    public IValidationRule<TModel> Rule { get; init; }
+    public Func<TModel, object> Accessor { get; init; }
+    public ValidationRuleEntry(IValidationRule<TModel> rule, Func<TModel, object> accessor)
+    {
+        Rule = rule;
+        Accessor = accessor;
+    }
+}
 
 public class ValidatorBuilder<TModel>
 {
+
     private readonly List<string> _validErrors;
     private readonly Dictionary<int, List<ValidatorRule<TModel>>> _validatorMap;
     private int _ruleId;
-    private readonly Dictionary<int, (IValidationRule<TModel>, Func<TModel, object>)> _rules;
+    private readonly Dictionary<int, ValidationRuleEntry<TModel>> _rules;
     public ValidatorBuilder()
     {
         _ruleId = 0;
@@ -46,9 +57,9 @@ public class ValidatorBuilder<TModel>
         foreach (var kvp in _validatorMap)
         {
             var rule = _rules[kvp.Key];
-            if (!rule.Item1.ShouldValidate(model)) continue;
+            if (!rule.Rule.ShouldValidate(model)) continue;
 
-            var value = rule.Item2(model);
+            var value = rule.Accessor(model);
 
             foreach (var v in kvp.Value)
             {
@@ -72,7 +83,7 @@ public class ValidatorBuilder<TModel>
 
         var rule = new RuleBuilder<TModel, TProperty>(this, propertyName, _ruleId);
 
-        _rules.Add(_ruleId++, (rule, model => func(model)!));
+        _rules.Add(_ruleId++, new(rule, model => func(model)!));
 
         return rule;
     }

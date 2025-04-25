@@ -1,6 +1,6 @@
 ﻿namespace MatValidator;
 
-internal interface IValidationRule<TModel>
+public interface IValidationRule<TModel>
 {
     Func<TModel, bool> ShouldValidate { get; }
     Func<TModel, bool> NextCondition { get; }
