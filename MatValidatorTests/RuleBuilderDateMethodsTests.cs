@@ -44,12 +44,12 @@ public class RuleBuilderDateMethodsTests
 
         // Act
         var result = validator.Validate(@event);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("Start date must be in the past.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("Start date must be in the past.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -66,12 +66,12 @@ public class RuleBuilderDateMethodsTests
 
         // Act
         var result = validator.Validate(@event);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("End date must be in the future.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("End date must be in the future.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -88,12 +88,12 @@ public class RuleBuilderDateMethodsTests
 
         // Act
         var result = validator.Validate(@event);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("Start date must be before reference date.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("Start date must be before reference date.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -110,12 +110,12 @@ public class RuleBuilderDateMethodsTests
 
         // Act
         var result = validator.Validate(@event);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("End date must be after reference date.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("End date must be after reference date.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -133,12 +133,12 @@ public class RuleBuilderDateMethodsTests
 
         // Act
         var result = validator.Validate(@event);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("Registration deadline must be within the specified range.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("Registration deadline must be within the specified range.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -155,12 +155,12 @@ public class RuleBuilderDateMethodsTests
 
         // Act
         var result = validator.Validate(@event);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("Special day must be on a weekend.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("Special day must be on a weekend.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -177,12 +177,12 @@ public class RuleBuilderDateMethodsTests
 
         // Act
         var result = validator.Validate(@event);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("Special day must be today.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("Special day must be today.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Theory]
@@ -227,12 +227,12 @@ public class RuleBuilderDateMethodsTests
 
         // Act
         var result = validator.Validate(@event);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal($"Must be {dayOfWeek}.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal($"Must be {dayOfWeek}.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -267,11 +267,11 @@ public class RuleBuilderDateMethodsTests
 
         // Act
         var result = validator.Validate(@event);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal(4, result.ErrorMessages.Count);
+        Assert.Equal(4, result.ErrorMessages.Length);
     }
 
     private DateTime GetNextWeekday(DayOfWeek day)

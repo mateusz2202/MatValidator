@@ -42,12 +42,12 @@ public class RuleBuilderMethodsTests
 
         // Act
         var result = validator.Validate(model);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("Name must be 'valid'.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("Name must be 'valid'.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -63,12 +63,12 @@ public class RuleBuilderMethodsTests
 
         // Act
         var result = validator.Validate(model);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("Custom validation failed.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("Custom validation failed.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -85,12 +85,12 @@ public class RuleBuilderMethodsTests
 
         // Act
         var result = validator.Validate(model);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("Field is required.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("Field is required.", result.ErrorMessages.ToArray()[0]);
     }
 
 
@@ -107,12 +107,12 @@ public class RuleBuilderMethodsTests
 
         // Act
         var result = validator.Validate(model);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("Status must be 'approved'.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("Status must be 'approved'.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -128,12 +128,12 @@ public class RuleBuilderMethodsTests
 
         // Act
         var result = validator.Validate(model);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("Status must not be 'invalid'.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("Status must not be 'invalid'.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -152,11 +152,11 @@ public class RuleBuilderMethodsTests
 
         // Act
         var result = validator.Validate(model);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal(2, result.ErrorMessages.Count);
+        Assert.Equal(2, result.ErrorMessages.Length);
     }
 
     [Fact]
@@ -175,11 +175,11 @@ public class RuleBuilderMethodsTests
 
         // Act
         var result = validator.Validate(model);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal(2, result.ErrorMessages.Count);
+        Assert.Equal(2, result.ErrorMessages.Length);
     }
 
     [Fact]
@@ -195,12 +195,12 @@ public class RuleBuilderMethodsTests
 
         // Act
         var result = validator.Validate(model);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("Name must be null.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("Name must be null.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -216,12 +216,12 @@ public class RuleBuilderMethodsTests
 
         // Act
         var result = validator.Validate(model);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("Name is required.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("Name is required.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -238,12 +238,12 @@ public class RuleBuilderMethodsTests
 
         // Act
         var result = validator.Validate(model);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("Status must be one of: active, inactive, pending.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("Status must be one of: active, inactive, pending.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -260,12 +260,12 @@ public class RuleBuilderMethodsTests
 
         // Act
         var result = validator.Validate(model);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("Status must not be banned or suspended.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("Status must not be banned or suspended.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -281,11 +281,11 @@ public class RuleBuilderMethodsTests
 
         // Act
         var result = validator.Validate(model);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
+        Assert.Single(result.ErrorMessages.ToArray());
     }
 
     [Fact]
@@ -301,11 +301,11 @@ public class RuleBuilderMethodsTests
 
         // Act
         var result = validator.Validate(model);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
+        Assert.Single(result.ErrorMessages.ToArray());
     }
 
     [Fact]
@@ -321,12 +321,12 @@ public class RuleBuilderMethodsTests
 
         // Act
         var result = validator.Validate(model);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("Role must be a valid enum value.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("Role must be a valid enum value.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -364,11 +364,11 @@ public class RuleBuilderMethodsTests
 
         // Act
         var result = validator.Validate(model);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal(4, result.ErrorMessages.Count);
+        Assert.Equal(4, result.ErrorMessages.Length);
     }
 }
 

@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 
 namespace MatValidator;
 public abstract class AbstractValidator<TModel> : ValidatorBuilder<TModel> { }
@@ -47,9 +48,9 @@ public class ValidatorBuilder<TModel>
         var errors = GetErrors(model).Concat(_validErrors);
 
         if (_validErrors.Count == 0)
-            return new ValidResult([.. errors]);
+            return new ValidResult(CollectionsMarshal.AsSpan(errors.ToList()));
 
-        return new ValidResult([.. errors.Concat(_validErrors)]);
+        return new ValidResult(CollectionsMarshal.AsSpan(errors.Concat(_validErrors).ToList()));
     }
 
     public IEnumerable<string> GetErrors(TModel model)

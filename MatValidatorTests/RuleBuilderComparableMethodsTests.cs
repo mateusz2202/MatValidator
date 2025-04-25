@@ -39,12 +39,12 @@ public class RuleBuilderComparableMethodsTests
 
         // Act
         var result = validator.Validate(model);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("Age must be greater than 18.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("Age must be greater than 18.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -60,12 +60,12 @@ public class RuleBuilderComparableMethodsTests
 
         // Act
         var result = validator.Validate(model);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("Price must be less than 100.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("Price must be less than 100.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -81,12 +81,12 @@ public class RuleBuilderComparableMethodsTests
 
         // Act
         var result = validator.Validate(model);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("Age must be at least 18.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("Age must be at least 18.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -102,11 +102,11 @@ public class RuleBuilderComparableMethodsTests
 
         // Act
         var result = validator.Validate(model);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("Price must be at most 100.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("Price must be at most 100.", result.ErrorMessages.ToArray()[0]);
     }
 }

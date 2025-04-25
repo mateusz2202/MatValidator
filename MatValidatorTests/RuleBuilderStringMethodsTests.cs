@@ -50,7 +50,7 @@ public class RuleBuilderStringMethodsTests
 
         var result = validator.Validate(user);
 
-        var jsonResult = JsonSerializer.Serialize(result);
+        var jsonResult = JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray()));
 
         _output.WriteLine(jsonResult);
 
@@ -91,7 +91,7 @@ public class RuleBuilderStringMethodsTests
 
         var result = validator.Validate(user);
 
-        var jsonResult = JsonSerializer.Serialize(result);
+        var jsonResult = JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray()));
 
         _output.WriteLine(jsonResult);
 
@@ -110,12 +110,12 @@ public class RuleBuilderStringMethodsTests
 
         // Act
         var result = validator.Validate(user);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("FirstName must be between 5 and 10 characters.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("FirstName must be between 5 and 10 characters.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -131,12 +131,12 @@ public class RuleBuilderStringMethodsTests
 
         // Act
         var result = validator.Validate(user);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("FirstName must be at most 5 characters.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("FirstName must be at most 5 characters.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -152,12 +152,12 @@ public class RuleBuilderStringMethodsTests
 
         // Act
         var result = validator.Validate(user);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("FirstName must be at least 2 characters.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("FirstName must be at least 2 characters.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -173,12 +173,12 @@ public class RuleBuilderStringMethodsTests
 
         // Act
         var result = validator.Validate(user);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("Invalid email format.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("Invalid email format.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -199,12 +199,12 @@ public class RuleBuilderStringMethodsTests
 
         // Act
         var result = validator.Validate(user);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal(nameof(UserInfo) + ".Invalid URL format.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal(nameof(UserInfo) + ".Invalid URL format.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -220,12 +220,12 @@ public class RuleBuilderStringMethodsTests
 
         // Act
         var result = validator.Validate(user);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("FirstName must contain only letters.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("FirstName must contain only letters.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -241,12 +241,12 @@ public class RuleBuilderStringMethodsTests
 
         // Act
         var result = validator.Validate(user);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("FirstName must be alphanumeric.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("FirstName must be alphanumeric.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -262,12 +262,12 @@ public class RuleBuilderStringMethodsTests
 
         // Act
         var result = validator.Validate(user);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("FirstName must start with 'Mr'.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("FirstName must start with 'Mr'.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -283,12 +283,12 @@ public class RuleBuilderStringMethodsTests
 
         // Act
         var result = validator.Validate(user);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("FirstName must end with 'Smith'.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("FirstName must end with 'Smith'.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -304,12 +304,12 @@ public class RuleBuilderStringMethodsTests
 
         // Act
         var result = validator.Validate(user);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("FirstName must start with capital letter followed by lowercase letters.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray());
+        Assert.Equal("FirstName must start with capital letter followed by lowercase letters.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]
@@ -343,10 +343,10 @@ public class RuleBuilderStringMethodsTests
 
         // Act
         var result = validator.Validate(user);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal(5, result.ErrorMessages.Count);
+        Assert.Equal(5, result.ErrorMessages.Length);
     }
 }

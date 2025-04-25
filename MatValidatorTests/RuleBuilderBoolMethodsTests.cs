@@ -39,12 +39,12 @@ public class RuleBuilderBoolMethodsTests
 
         // Act
         var result = validator.Validate(model);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("IsActive must be true.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray().ToArray().ToArray());
+        Assert.Equal("IsActive must be true.", result.ErrorMessages.ToArray().ToArray()[0]);
     }
 
     [Fact]
@@ -60,11 +60,11 @@ public class RuleBuilderBoolMethodsTests
 
         // Act
         var result = validator.Validate(model);
-        _output.WriteLine(JsonSerializer.Serialize(result));
+        _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Single(result.ErrorMessages);
-        Assert.Equal("IsDeleted must be false.", result.ErrorMessages[0]);
+        Assert.Single(result.ErrorMessages.ToArray().ToArray());
+        Assert.Equal("IsDeleted must be false.", result.ErrorMessages.ToArray().ToArray()[0]);
     }
 }

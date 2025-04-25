@@ -1,7 +1,13 @@
 ﻿namespace MatValidator;
 
-public readonly struct ValidResult(List<string> errorMessages)
+public readonly ref struct ValidResult
 {
-    public List<string> ErrorMessages { get; } = errorMessages;
-    public bool IsValid => ErrorMessages.Count == 0;
+    private readonly ReadOnlySpan<string> _errors;
+
+    public ValidResult(ReadOnlySpan<string> errors)
+    {
+        _errors = errors;
+    }
+    public ReadOnlySpan<string> ErrorMessages => _errors;
+    public bool IsValid => _errors.Length == 0;
 }
