@@ -1,5 +1,5 @@
 ﻿namespace MatValidator;
-public partial class RuleBuilder<TModel, TProperty> : IValidationRule<TModel>
+public sealed partial class RuleBuilder<TModel, TProperty> : IValidationRule<TModel>
 {
     internal RuleBuilder<TModel, TProperty> IsTrue(string message = null)
         => AddValidator(value =>

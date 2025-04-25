@@ -7,7 +7,7 @@ internal interface IValidationRule<TModel>
     int Id { get; }
 }
 
-public partial class RuleBuilder<TModel, TProperty> : IValidationRule<TModel>
+public sealed partial class RuleBuilder<TModel, TProperty> : IValidationRule<TModel>
 {
     private readonly ValidatorBuilder<TModel> _parent;
     public Func<TModel, bool> ShouldValidate { get; private set; } = _ => true;

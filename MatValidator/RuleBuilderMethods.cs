@@ -1,5 +1,5 @@
 ﻿namespace MatValidator;
-public partial class RuleBuilder<TModel, TProperty> : IValidationRule<TModel>
+public sealed partial class RuleBuilder<TModel, TProperty> : IValidationRule<TModel>
 {
     public RuleBuilder<TModel, TProperty> Must(Func<TProperty, bool> func, string message = null)
         => AddValidator(value =>

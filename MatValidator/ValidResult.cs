@@ -1,6 +1,7 @@
 ﻿namespace MatValidator;
 
-public record ValidResult(List<string> ErrorMessages)
+public readonly struct ValidResult(List<string> errorMessages)
 {
+    public List<string> ErrorMessages { get; } = errorMessages;
     public bool IsValid => ErrorMessages.Count == 0;
 }

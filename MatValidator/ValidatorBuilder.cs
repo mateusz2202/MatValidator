@@ -34,7 +34,11 @@ public class ValidatorBuilder<TModel>
     public ValidResult Validate(TModel model)
     {
         var errors = GetErrors(model).Concat(_validErrors);
-        return new ValidResult([.. errors]);
+
+        if (_validErrors.Count == 0)
+            return new ValidResult([.. errors]);
+
+        return new ValidResult([.. errors.Concat(_validErrors)]);
     }
 
     public IEnumerable<string> GetErrors(TModel model)
