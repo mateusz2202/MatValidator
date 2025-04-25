@@ -21,18 +21,19 @@ public readonly struct ValidationRuleEntry<TModel>
 {
     public IValidationRule<TModel> Rule { get; init; }
     public Func<TModel, object> Accessor { get; init; }
+
+    public List<ValidatorRule<TModel>> Validators { get; init; }
     public ValidationRuleEntry(IValidationRule<TModel> rule, Func<TModel, object> accessor)
     {
         Rule = rule;
         Accessor = accessor;
+        Validators = [];
     }
 }
 
 public class ValidatorBuilder<TModel>
 {
-
     private readonly List<string> _validErrors;
-    private readonly Dictionary<int, List<ValidatorRule<TModel>>> _validatorMap;
     private int _ruleId;
     private readonly Dictionary<int, ValidationRuleEntry<TModel>> _rules;
     public ValidatorBuilder()
@@ -40,7 +41,6 @@ public class ValidatorBuilder<TModel>
         _ruleId = 0;
         _rules = [];
         _validErrors = [];
-        _validatorMap = [];
     }
 
     public ValidResult Validate(TModel model)
@@ -53,16 +53,15 @@ public class ValidatorBuilder<TModel>
         return new ValidResult(CollectionsMarshal.AsSpan(errors.Concat(_validErrors).ToList()));
     }
 
-    public IEnumerable<string> GetErrors(TModel model)
+    private IEnumerable<string> GetErrors(TModel model)
     {
-        foreach (var kvp in _validatorMap)
+        foreach (var rule in _rules)
         {
-            var rule = _rules[kvp.Key];
-            if (!rule.Rule.ShouldValidate(model)) continue;
+            if (!rule.Value.Rule.ShouldValidate(model)) continue;
 
-            var value = rule.Accessor(model);
+            var value = rule.Value.Accessor(model);
 
-            foreach (var v in kvp.Value)
+            foreach (var v in rule.Value.Validators)
             {
                 if (!v.Condition(model)) continue;
 
@@ -96,11 +95,8 @@ public class ValidatorBuilder<TModel>
 
     internal void AddValidator(ValidatorRule<TModel> validator)
     {
-        if (!_validatorMap.TryGetValue(validator.RuleId, out var list))
-        {
-            list = [];
-            _validatorMap[validator.RuleId] = list;
-        }
-        list.Add(validator);
+        if (_rules.TryGetValue(validator.RuleId, out var rule))
+            rule.Validators.Add(validator);
+
     }
 }
