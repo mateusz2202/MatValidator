@@ -6,19 +6,19 @@ public abstract class AbstractValidator<TModel> : ValidatorBuilder<TModel> { }
 
 public class ValidatorBuilder<TModel>
 {
-    public readonly ValidResult validResult;
+    public readonly ValidResult ValidResult;
     private readonly List<IValidatorRule> _rules;
 
     public ValidatorBuilder()
     {
         _rules = [];
-        validResult = new([]);
+        ValidResult = new([]);
     }
 
     public ValidResult Validate(TModel model)
     {
-        validResult.ErrorMessages.AddRange(_rules.SelectMany(rule => rule.Validate(model)));
-        return validResult;
+        ValidResult.ErrorMessages.AddRange(_rules.SelectMany(rule => rule.Validate(model)));
+        return ValidResult;
     }
 
 
