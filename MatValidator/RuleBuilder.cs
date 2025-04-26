@@ -22,10 +22,10 @@ public sealed partial class RuleBuilder<TModel, TProperty> : IValidatorRule
     private readonly List<IValidator> _validators;
     private readonly Expression<Func<TModel, TProperty>> _accessor;
 
-    public RuleBuilder(ValidatorBuilder<TModel> parent, string propertyName, Expression<Func<TModel, TProperty>> accessor)
+    public RuleBuilder(ValidatorBuilder<TModel> parent, Expression<Func<TModel, TProperty>> accessor)
     {
         _parent = parent;
-        _propertyName = propertyName;
+        _propertyName = accessor.GetPropertyName();
         _accessor = accessor;
         _validators = [];
     }
