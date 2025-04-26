@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using MatValidator.Utils;
+using System.Linq.Expressions;
 
 namespace MatValidator;
 public abstract class AbstractValidator<TModel> : ValidatorBuilder<TModel> { }
@@ -33,13 +34,9 @@ public class ValidatorBuilder<TModel>
 
     public RuleBuilder<TModel, TProperty> RuleFor<TProperty>(Expression<Func<TModel, TProperty>> expression)
     {
-        if (expression.Body is not MemberExpression memberExpr)
-            throw new ArgumentException("Expression must be a property access", nameof(expression));
+        var propertyName = expression.GetPropertyName();
 
-        var propertyName = memberExpr.Member.Name;
-        var func = expression.Compile();
-
-        var rule = new RuleBuilder<TModel, TProperty>(this, propertyName, func);
+        var rule = new RuleBuilder<TModel, TProperty>(this, propertyName, expression);
 
         _rules.Add(rule);
 

@@ -1,4 +1,7 @@
-﻿namespace MatValidator;
+﻿using MatValidator.Utils;
+using System.Linq.Expressions;
+
+namespace MatValidator;
 public interface IValidator
 {
     string? Validate<T>(T value);
@@ -17,9 +20,9 @@ public sealed partial class RuleBuilder<TModel, TProperty> : IValidatiorRule
     public Predicate<TModel> NextCondition { get; private set; } = _ => true;
 
     private readonly List<IValidator> _validators;
-    private readonly Func<TModel, TProperty> _accessor;
+    private readonly Expression<Func<TModel, TProperty>> _accessor;
 
-    public RuleBuilder(ValidatorBuilder<TModel> parent, string propertyName, Func<TModel, TProperty> accessor)
+    public RuleBuilder(ValidatorBuilder<TModel> parent, string propertyName, Expression<Func<TModel, TProperty>> accessor)
     {
         _parent = parent;
         _propertyName = propertyName;
@@ -54,7 +57,7 @@ public sealed partial class RuleBuilder<TModel, TProperty> : IValidatiorRule
                 continue;
             }
 
-            var value = _accessor.Invoke(typedModel);
+            var value = typedModel.GetPropertyValue(_accessor);
             var error = validator.Validate(value);
             if (error is not null)
                 yield return error;
