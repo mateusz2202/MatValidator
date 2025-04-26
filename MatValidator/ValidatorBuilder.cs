@@ -8,7 +8,7 @@ public abstract class AbstractValidator<TModel> : ValidatorBuilder<TModel> { }
 public class ValidatorBuilder<TModel>
 {
     private ValidResult _result;
-    private readonly List<IValidatiorRule> _rules;
+    private readonly List<IValidatorRule> _rules;
 
     public ValidatorBuilder()
     {

@@ -1,5 +1,5 @@
 ﻿namespace MatValidator;
-public sealed partial class RuleBuilder<TModel, TProperty> : IValidatiorRule
+public sealed partial class RuleBuilder<TModel, TProperty> : IValidatorRule
 {
     internal RuleBuilder<TModel, TProperty> GreaterThan(TProperty threshold, string message = null)
         => AddValidator(new GreaterThanValidator<TModel, TProperty>(_propertyName, threshold, message));

@@ -1,5 +1,5 @@
 ﻿namespace MatValidator;
-public sealed partial class RuleBuilder<TModel, TProperty> : IValidatiorRule
+public sealed partial class RuleBuilder<TModel, TProperty> : IValidatorRule
 {
     internal RuleBuilder<TModel, TProperty> IsInThePast(string message = null)
         => AddValidator(new IsInThePastValidator<TModel, TProperty>(_propertyName, message));

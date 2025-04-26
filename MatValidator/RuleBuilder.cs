@@ -6,12 +6,12 @@ public interface IValidator
 {
     string? Validate<T>(T value);
 }
-public interface IValidatiorRule
+public interface IValidatorRule
 {
     IEnumerable<string> Validate<T>(T model);
 }
 
-public sealed partial class RuleBuilder<TModel, TProperty> : IValidatiorRule
+public sealed partial class RuleBuilder<TModel, TProperty> : IValidatorRule
 {
     private readonly ValidatorBuilder<TModel> _parent;
     private string _propertyName;

@@ -1,5 +1,5 @@
 ﻿namespace MatValidator;
-public sealed partial class RuleBuilder<TModel, TProperty> : IValidatiorRule
+public sealed partial class RuleBuilder<TModel, TProperty> : IValidatorRule
 {
     public RuleBuilder<TModel, TProperty> When(Func<TModel, bool> condition)
     {

@@ -1,5 +1,5 @@
 ﻿namespace MatValidator;
-public sealed partial class RuleBuilder<TModel, TProperty> : IValidatiorRule
+public sealed partial class RuleBuilder<TModel, TProperty> : IValidatorRule
 {
     internal RuleBuilder<TModel, TProperty> Range(int min, int max, string message = null)
        => AddValidator(new RangeValidator<TModel, TProperty>(_propertyName, min, max, message));

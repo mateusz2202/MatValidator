@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 
 namespace MatValidator;
-public sealed partial class RuleBuilder<TModel, TProperty> : IValidatiorRule
+public sealed partial class RuleBuilder<TModel, TProperty> : IValidatorRule
 {
     internal RuleBuilder<TModel, TProperty> Length(int min, int max, string message = null)
         => AddValidator(new LengthValidator<TModel, TProperty>(_propertyName, min, max, message));
