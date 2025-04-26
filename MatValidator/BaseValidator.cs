@@ -1,4 +1,12 @@
 ﻿namespace MatValidator;
+public interface IValidator
+{
+    string? Validate<T>(T value);
+}
+public interface IValidatorRule
+{
+    IEnumerable<string> Validate<T>(T model);
+}
 
 internal class BaseValidator
 {

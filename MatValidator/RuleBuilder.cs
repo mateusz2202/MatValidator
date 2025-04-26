@@ -2,14 +2,7 @@
 using System.Linq.Expressions;
 
 namespace MatValidator;
-public interface IValidator
-{
-    string? Validate<T>(T value);
-}
-public interface IValidatorRule
-{
-    IEnumerable<string> Validate<T>(T model);
-}
+
 
 public sealed partial class RuleBuilder<TModel, TProperty> : IValidatorRule
 {
@@ -49,7 +42,7 @@ public sealed partial class RuleBuilder<TModel, TProperty> : IValidatorRule
         if (model is not TModel typedModel || !ShouldValidate(typedModel))
             yield break;
 
-        foreach (var validator in _validators)
+        for (int i = 0; i < _validators.Count; i++)
         {
             if (!NextCondition(typedModel))
             {
@@ -57,8 +50,8 @@ public sealed partial class RuleBuilder<TModel, TProperty> : IValidatorRule
                 continue;
             }
 
-            var value = typedModel.GetPropertyValue(_accessor);
-            var error = validator.Validate(value);
+            var error = _validators[i].Validate(typedModel.GetPropertyValue(_accessor));
+
             if (error is not null)
                 yield return error;
         }

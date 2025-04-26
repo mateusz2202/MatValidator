@@ -3,7 +3,6 @@
 namespace MatValidator;
 public abstract class AbstractValidator<TModel> : ValidatorBuilder<TModel> { }
 
-
 public class ValidatorBuilder<TModel>
 {
     public readonly ValidResult ValidResult;
