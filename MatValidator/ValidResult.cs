@@ -2,9 +2,9 @@
 
 public readonly struct ValidResult
 {
-    private readonly string[] _errors;
+    private readonly List<string> _errors;
 
-    public ValidResult(string[] errors) => _errors = errors;
-    public string[] ErrorMessages => _errors;
-    public bool IsValid => _errors.Length == 0;
+    public ValidResult(List<string> errors) => _errors = errors;
+    public List<string> ErrorMessages => _errors;
+    public bool IsValid => _errors.Count == 0;
 }

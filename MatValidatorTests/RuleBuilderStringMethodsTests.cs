@@ -347,6 +347,6 @@ public class RuleBuilderStringMethodsTests
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal(5, result.ErrorMessages.Length);
+        Assert.Equal(5, result.ErrorMessages.Count);
     }
 }

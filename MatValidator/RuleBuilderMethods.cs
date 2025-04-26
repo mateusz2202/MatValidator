@@ -77,7 +77,7 @@ internal sealed class SetValidatorValidator<TModel, TProperty>(string propertyNa
     public string? Validate<T>(T value)
     {
         if (value is TProperty property)
-            _parent.Errors.AddRange(_validator.Validate(property).ErrorMessages);
+            _parent.validResult.ErrorMessages.AddRange(_validator.Validate(property).ErrorMessages);
 
         return null;
     }

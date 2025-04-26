@@ -271,7 +271,7 @@ public class RuleBuilderDateMethodsTests
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal(4, result.ErrorMessages.Length);
+        Assert.Equal(4, result.ErrorMessages.Count);
     }
 
     private DateTime GetNextWeekday(DayOfWeek day)

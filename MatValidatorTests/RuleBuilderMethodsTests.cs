@@ -156,7 +156,7 @@ public class RuleBuilderMethodsTests
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal(2, result.ErrorMessages.Length);
+        Assert.Equal(2, result.ErrorMessages.Count);
     }
 
     [Fact]
@@ -179,7 +179,7 @@ public class RuleBuilderMethodsTests
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal(2, result.ErrorMessages.Length);
+        Assert.Equal(2, result.ErrorMessages.Count);
     }
 
     [Fact]
@@ -368,7 +368,7 @@ public class RuleBuilderMethodsTests
 
         // Assert
         Assert.False(result.IsValid);
-        Assert.Equal(4, result.ErrorMessages.Length);
+        Assert.Equal(4, result.ErrorMessages.Count);
     }
 }
 
