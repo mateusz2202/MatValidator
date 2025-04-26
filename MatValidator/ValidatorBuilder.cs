@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using System.Runtime.InteropServices;
 
 namespace MatValidator;
 public abstract class AbstractValidator<TModel> : ValidatorBuilder<TModel> { }
@@ -7,22 +6,30 @@ public abstract class AbstractValidator<TModel> : ValidatorBuilder<TModel> { }
 
 public class ValidatorBuilder<TModel>
 {
-    private readonly List<string> _validErrors;
+    private ValidResult _result;
     private readonly List<IValidatiorRule> _rules;
 
     public ValidatorBuilder()
     {
         _rules = [];
-        _validErrors = [];
+        _result = new ValidResult([]);
     }
 
     public ValidResult Validate(TModel model)
     {
-        foreach (var rule in _rules)
-            _validErrors.AddRange(rule.Validate(model));
+        var errors = _rules.SelectMany(rule => rule.Validate(model)).ToArray();
 
-        return new ValidResult(CollectionsMarshal.AsSpan(_validErrors));
+        Span<string> span1 = _result.ErrorMessages;
+        Span<string> span2 = errors;
+
+        string[] result = new string[span1.Length + span2.Length];
+        span1.CopyTo(result);
+        span2.CopyTo(result.AsSpan(span1.Length));
+        _result = new ValidResult(result);
+
+        return _result;
     }
+
 
     public RuleBuilder<TModel, TProperty> RuleFor<TProperty>(Expression<Func<TModel, TProperty>> expression)
     {
@@ -39,9 +46,14 @@ public class ValidatorBuilder<TModel>
         return rule;
     }
 
-    internal void AddError(string error)
+    internal void AddError(ValidResult validResult)
     {
-        _validErrors.Add(error);
+        Span<string> span1 = _result.ErrorMessages;
+        Span<string> span2 = validResult.ErrorMessages;
+        string[] result = new string[span1.Length + span2.Length];
+        span1.CopyTo(result);
+        span2.CopyTo(result.AsSpan(span1.Length));
+        _result = new ValidResult(result);
     }
 
 }

@@ -204,7 +204,7 @@ public class RuleBuilderStringMethodsTests
         // Assert
         Assert.False(result.IsValid);
         Assert.Single(result.ErrorMessages.ToArray());
-        Assert.Equal(nameof(UserInfo) + ".Invalid URL format.", result.ErrorMessages.ToArray()[0]);
+        Assert.Equal("Invalid URL format.", result.ErrorMessages.ToArray()[0]);
     }
 
     [Fact]

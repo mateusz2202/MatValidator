@@ -13,8 +13,8 @@ public sealed partial class RuleBuilder<TModel, TProperty> : IValidatiorRule
     private readonly ValidatorBuilder<TModel> _parent;
     private string _propertyName;
 
-    public Func<TModel, bool> ShouldValidate { get; private set; } = _ => true;
-    public Func<TModel, bool> NextCondition { get; private set; } = _ => true;
+    public Predicate<TModel> ShouldValidate { get; private set; } = _ => true;
+    public Predicate<TModel> NextCondition { get; private set; } = _ => true;
 
     private readonly List<IValidator> _validators;
     private readonly Func<TModel, TProperty> _accessor;

@@ -3,19 +3,19 @@ public sealed partial class RuleBuilder<TModel, TProperty> : IValidatiorRule
 {
     public RuleBuilder<TModel, TProperty> When(Func<TModel, bool> condition)
     {
-        ShouldValidate = condition ?? (_ => true);
+        ShouldValidate = new Predicate<TModel>(condition ?? (static _ => true));
         return this;
     }
 
     public RuleBuilder<TModel, TProperty> Unless(Func<TModel, bool> predicate)
     {
-        NextCondition = model => !predicate(model);
+        NextCondition = new Predicate<TModel>(model => !predicate(model));
         return this;
     }
 
     public RuleBuilder<TModel, TProperty> If(Func<TModel, bool> condition)
     {
-        NextCondition = condition ?? (_ => true);
+        NextCondition = new Predicate<TModel>(condition ?? (static _ => true));
         return this;
     }
 }

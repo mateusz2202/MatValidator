@@ -76,15 +76,8 @@ internal sealed class SetValidatorValidator<TModel, TProperty>(string propertyNa
     private readonly ValidatorBuilder<TModel> _parent = parent;
     public string? Validate<T>(T value)
     {
-        if (value == null) return null;
-
         if (value is TProperty property)
-        {
-            var result = _validator.Validate(property);
-            foreach (var error in result.ErrorMessages)
-                _parent.AddError($"{_propertyName}.{error}");
-        }
-
+            _parent.AddError(_validator.Validate(property));
 
         return null;
     }
