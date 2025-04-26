@@ -1,6 +1,6 @@
 ﻿using MatValidator;
 
-var user = new User((Status)6, "", "janXd", 100, new("infoxd", "22-382", ["note1"], DateTime.Now));
+var user = new User((Status)6, "", "janXd", 100, new("infoxd", "22-382", ["note1"], DateTime.Now), true);
 
 Console.WriteLine("------------sample with builder---------");
 
@@ -25,6 +25,10 @@ validator.RuleFor(x => x.Age)
     .GreaterThanOrEqual(100)
     .GreaterThan(100)
     .Range(1, 120);
+
+validator
+    .RuleFor(x => x.IsActive)
+    .IsTrue();
 
 validator2
     .RuleFor(x => x.Info)
@@ -61,7 +65,7 @@ Console.WriteLine(result.IsValid);
 Console.WriteLine(string.Join($",{Environment.NewLine}", result.ErrorMessages));
 
 
-public record User(Status Status, string FirstName, string Email, int? Age, UserInfo UserInfo);
+public record User(Status Status, string FirstName, string Email, int? Age, UserInfo UserInfo, bool IsActive);
 public record UserInfo(string Info, string ZipCode, List<string> Notes, DateTime? DateOfBirthday);
 
 public enum Status

@@ -1,37 +1,63 @@
 ﻿namespace MatValidator;
-
-public interface IValidationRule<TModel>
+public interface IValidator
 {
-    Func<TModel, bool> ShouldValidate { get; }
-    Func<TModel, bool> NextCondition { get; }
-    int Id { get; }
+    string? Validate<T>(T value);
+}
+public interface IValidatiorRule
+{
+    IEnumerable<string> Validate<T>(T model);
 }
 
-public sealed partial class RuleBuilder<TModel, TProperty> : IValidationRule<TModel>
+public sealed partial class RuleBuilder<TModel, TProperty> : IValidatiorRule
 {
     private readonly ValidatorBuilder<TModel> _parent;
+    private string _propertyName;
+
     public Func<TModel, bool> ShouldValidate { get; private set; } = _ => true;
     public Func<TModel, bool> NextCondition { get; private set; } = _ => true;
 
+    private readonly List<IValidator> _validators;
+    private readonly Func<TModel, TProperty> _accessor;
 
-    private string _propertyName;
-
-    public int Id { get; init; }
-
-
-    public RuleBuilder(ValidatorBuilder<TModel> parent, string propertyName, int id)
+    public RuleBuilder(ValidatorBuilder<TModel> parent, string propertyName, Func<TModel, TProperty> accessor)
     {
         _parent = parent;
         _propertyName = propertyName;
-        Id = id;
+        _accessor = accessor;
+        _validators = [];
     }
 
-    private RuleBuilder<TModel, TProperty> AddValidator(Func<object, string> validator)
+    public RuleBuilder<TModel, TProperty> OverridePropertyName(string propertName)
     {
-        _parent.AddValidator(new ValidatorRule<TModel>(NextCondition, validator, Id));
-
-        NextCondition = _ => true;
+        _propertyName = propertName;
 
         return this;
+    }
+
+    public RuleBuilder<TModel, TProperty> AddValidator(IValidator validator)
+    {
+        _validators.Add(validator);
+        NextCondition = _ => true;
+        return this;
+    }
+
+    public IEnumerable<string> Validate<T>(T model)
+    {
+        if (model is not TModel typedModel || !ShouldValidate(typedModel))
+            yield break;
+
+        foreach (var validator in _validators)
+        {
+            if (!NextCondition(typedModel))
+            {
+                NextCondition = _ => true;
+                continue;
+            }
+
+            var value = _accessor.Invoke(typedModel);
+            var error = validator.Validate(value);
+            if (error is not null)
+                yield return error;
+        }
     }
 }

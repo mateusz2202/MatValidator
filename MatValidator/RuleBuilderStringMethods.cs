@@ -1,96 +1,37 @@
 ﻿using System.Text.RegularExpressions;
 
 namespace MatValidator;
-public sealed partial class RuleBuilder<TModel, TProperty> : IValidationRule<TModel>
+public sealed partial class RuleBuilder<TModel, TProperty> : IValidatiorRule
 {
     internal RuleBuilder<TModel, TProperty> Length(int min, int max, string message = null)
-        => AddValidator(value =>
-        {
-            if (value is string str && (str.Length > max || str.Length < min))
-                return message ?? $"{_propertyName} length must be between {min} and {max} characters.";
-            return null;
-        });
-
+        => AddValidator(new LengthValidator<TModel, TProperty>(_propertyName, min, max, message));
 
     internal RuleBuilder<TModel, TProperty> MaxLength(int max, string message = null)
-        => AddValidator(value =>
-        {
-            if (value is string str && str.Length > max)
-                return message ?? $"{_propertyName} length must be less than {max} characters.";
-            return null;
-        });
-
+        => AddValidator(new MaxLengthValidator<TModel, TProperty>(_propertyName, max, message));
 
     internal RuleBuilder<TModel, TProperty> MinLength(int min, string message = null)
-        => AddValidator(value =>
-        {
-            if (value is string str && str.Length < min)
-                return message ?? $"{_propertyName} length must be greater than {min} characters.";
-            return null;
-        });
-
+        => AddValidator(new MinLengthValidator<TModel, TProperty>(_propertyName, min, message));
 
     internal RuleBuilder<TModel, TProperty> IsEmail(string message = null)
-            => AddValidator(value =>
-            {
-                if (value is string str && !str.Contains('@'))
-                    return message ?? $"{_propertyName} is not a valid email";
-                return null;
-            });
-
+        => AddValidator(new IsEmailValidator<TModel, TProperty>(_propertyName, message));
 
     internal RuleBuilder<TModel, TProperty> IsUrl(string message = null)
-            => AddValidator(value =>
-            {
-                if (value is string str && !Uri.IsWellFormedUriString(str, UriKind.Absolute))
-                    return message ?? $"{_propertyName} is not a valid URL.";
-                return null;
-            });
-
+        => AddValidator(new IsUrlValidator<TModel, TProperty>(_propertyName, message));
 
     internal RuleBuilder<TModel, TProperty> IsAlpha(string message = null)
-            => AddValidator(value =>
-            {
-                if (value is string str && !str.All(char.IsLetter))
-                    return message ?? $"{_propertyName} must contain only letters.";
-                return null;
-            });
-
+        => AddValidator(new IsAlphaValidator<TModel, TProperty>(_propertyName, message));
 
     internal RuleBuilder<TModel, TProperty> IsAlphanumeric(string message = null)
-            => AddValidator(value =>
-            {
-                if (value is string str && !str.All(char.IsLetterOrDigit))
-                    return message ?? $"{_propertyName} must be alphanumeric.";
-                return null;
-            });
-
+        => AddValidator(new IsAlphanumericValidator<TModel, TProperty>(_propertyName, message));
 
     internal RuleBuilder<TModel, TProperty> StartsWith(string prefix, string message = null)
-        => AddValidator(value =>
-        {
-            if (value is string str && !str.StartsWith(prefix))
-                return message ?? $"{_propertyName} must start with '{prefix}'.";
-            return null;
-        });
-
+        => AddValidator(new StartsWithValidator<TModel, TProperty>(_propertyName, prefix, message));
 
     internal RuleBuilder<TModel, TProperty> EndsWith(string suffix, string message = null)
-        => AddValidator(value =>
-        {
-            if (value is string str && !str.EndsWith(suffix))
-                return message ?? $"{_propertyName} must end with '{suffix}'.";
-            return null;
-        });
-
+        => AddValidator(new EndsWithValidator<TModel, TProperty>(_propertyName, suffix, message));
 
     internal RuleBuilder<TModel, TProperty> Matches(string pattern, string message = null)
-        => AddValidator(value =>
-        {
-            if (value is string str && !Regex.IsMatch(str, pattern))
-                return message ?? $"{_propertyName} is not in the correct format.";
-            return null;
-        });
+        => AddValidator(new MatchesValidator<TModel, TProperty>(_propertyName, pattern, message));
 }
 
 public static class StringRuleBuilderExtensions
@@ -124,4 +65,86 @@ public static class StringRuleBuilderExtensions
 
     public static RuleBuilder<TModel, string> Matches<TModel>(this RuleBuilder<TModel, string> builder, string pattern, string message = null)
         => builder.Matches(pattern, message);
+}
+
+internal sealed class LengthValidator<TModel, TProperty>(string propertyName, int min, int max, string? message)
+    : BaseValidator(propertyName, message), IValidator
+{
+    private readonly int _min = min;
+    private readonly int _max = max;
+
+    public string? Validate<T>(T value)
+        => (value is string str && (str.Length > _max || str.Length < _min)) ? _message ?? $"{_propertyName} length must be between {_min} and {_max} characters." : null;
+}
+
+internal sealed class MaxLengthValidator<TModel, TProperty>(string propertyName, int max, string? message)
+    : BaseValidator(propertyName, message), IValidator
+{
+    private readonly int _max = max;
+
+    public string? Validate<T>(T value)
+        => (value is string str && str.Length > _max) ? _message ?? $"{_propertyName} length must be less than {_max} characters." : null;
+}
+
+internal sealed class MinLengthValidator<TModel, TProperty>(string propertyName, int min, string? message)
+    : BaseValidator(propertyName, message), IValidator
+{
+    private readonly int _min = min;
+
+    public string? Validate<T>(T value)
+        => (value is string str && str.Length < _min) ? _message ?? $"{_propertyName} length must be greater than {_min} characters." : null;
+}
+
+internal sealed class IsEmailValidator<TModel, TProperty>(string propertyName, string? message)
+    : BaseValidator(propertyName, message), IValidator
+{
+
+    public string? Validate<T>(T value)
+        => (value is string str && !str.Contains('@')) ? _message ?? $"{_propertyName} is not a valid email" : null;
+}
+
+internal sealed class IsUrlValidator<TModel, TProperty>(string propertyName, string? message)
+    : BaseValidator(propertyName, message), IValidator
+{
+
+    public string? Validate<T>(T value)
+        => (value is string str && !Uri.IsWellFormedUriString(str, UriKind.Absolute)) ? _message ?? $"{_propertyName} is not a valid URL." : null;
+}
+
+internal sealed class IsAlphaValidator<TModel, TProperty>(string propertyName, string? message)
+    : BaseValidator(propertyName, message), IValidator
+{
+    public string? Validate<T>(T value)
+        => (value is string str && !str.All(char.IsLetter)) ? _message ?? $"{_propertyName} must contain only letters." : null;
+}
+
+internal sealed class IsAlphanumericValidator<TModel, TProperty>(string propertyName, string? message)
+    : BaseValidator(propertyName, message), IValidator
+{
+    public string? Validate<T>(T value)
+        => (value is string str && !str.All(char.IsLetterOrDigit)) ? _message ?? $"{_propertyName} must be alphanumeric." : null;
+}
+
+internal sealed class StartsWithValidator<TModel, TProperty>(string propertyName, string prefix, string? message)
+    : BaseValidator(propertyName, message), IValidator
+{
+    private readonly string _prefix = prefix;
+    public string? Validate<T>(T value)
+        => (value is string str && !str.StartsWith(_prefix)) ? _message ?? $"{_propertyName} must start with '{_prefix}'." : null;
+}
+
+internal sealed class EndsWithValidator<TModel, TProperty>(string propertyName, string suffix, string? message)
+    : BaseValidator(propertyName, message), IValidator
+{
+    private readonly string _suffix = suffix;
+    public string? Validate<T>(T value)
+        => (value is string str && !str.EndsWith(_suffix)) ? _message ?? $"{_propertyName} must end with '{_suffix}'." : null;
+}
+
+internal sealed class MatchesValidator<TModel, TProperty>(string propertyName, string pattern, string? message)
+     : BaseValidator(propertyName, message), IValidator
+{
+    private readonly string _pattern = pattern;
+    public string? Validate<T>(T value)
+        => (value is string str && !Regex.IsMatch(str, _pattern)) ? _message ?? $"{_propertyName} is not in the correct format." : null;
 }

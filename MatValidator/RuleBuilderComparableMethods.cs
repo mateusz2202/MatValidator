@@ -1,44 +1,17 @@
 ﻿namespace MatValidator;
-public sealed partial class RuleBuilder<TModel, TProperty> : IValidationRule<TModel>
+public sealed partial class RuleBuilder<TModel, TProperty> : IValidatiorRule
 {
     internal RuleBuilder<TModel, TProperty> GreaterThan(TProperty threshold, string message = null)
-        => AddValidator(value =>
-        {
-            if (value is IComparable comparable && comparable.CompareTo(threshold) <= 0)
-                return message ?? $"{_propertyName} must be greater than {threshold}.";
-
-            return null;
-        });
-
+        => AddValidator(new GreaterThanValidator<TModel, TProperty>(_propertyName, threshold, message));
 
     internal RuleBuilder<TModel, TProperty> LessThan(TProperty threshold, string message = null)
-        => AddValidator(value =>
-        {
-            if (value is IComparable comparable && comparable.CompareTo(threshold) >= 0)
-                return message ?? $"{_propertyName} must be less than {threshold}.";
-
-            return null;
-        });
-
+        => AddValidator(new LessThanValidator<TModel, TProperty>(_propertyName, threshold, message));
 
     internal RuleBuilder<TModel, TProperty> GreaterThanOrEqual(TProperty threshold, string message = null)
-        => AddValidator(value =>
-        {
-            if (value is IComparable comparable && comparable.CompareTo(threshold) < 0)
-                return message ?? $"{_propertyName} must be greater than or equal to {threshold}.";
-
-            return null;
-        });
-
+         => AddValidator(new GreaterThanOrEqualValidator<TModel, TProperty>(_propertyName, threshold, message));
 
     internal RuleBuilder<TModel, TProperty> LessThanOrEqual(TProperty threshold, string message = null)
-        => AddValidator(value =>
-        {
-            if (value is IComparable comparable && comparable.CompareTo(threshold) > 0)
-                return message ?? $"{_propertyName} must be less than or equal to {threshold}.";
-
-            return null;
-        });
+        => AddValidator(new LessThanOrEqualValidator<TModel, TProperty>(_propertyName, threshold, message));
 
 }
 
@@ -84,4 +57,32 @@ public static class IComparableRuleBuilderExtensions
         (this RuleBuilder<TModel, TProperty?> builder, TProperty? threshold, string message = null)
         where TProperty : struct, IComparable<TProperty>, IComparable
         => builder.LessThanOrEqual(threshold, message);
+}
+
+internal sealed class GreaterThanValidator<TModel, TProperty>(string propertyName, TProperty threshold, string? message)
+    : ComparisonValidatorBase<TProperty>(propertyName, threshold, message), IValidator
+{
+    public string? Validate<T>(T value)
+        => value is IComparable comparable && comparable.CompareTo(_threshold) <= 0 ? _message ?? $"{_propertyName} must be greater than {_threshold}." : null;
+}
+
+internal sealed class LessThanValidator<TModel, TProperty>(string propertyName, TProperty threshold, string? message)
+    : ComparisonValidatorBase<TProperty>(propertyName, threshold, message), IValidator
+{
+    public string? Validate<T>(T value)
+        => value is IComparable comparable && comparable.CompareTo(_threshold) >= 0 ? _message ?? $"{_propertyName} must be less than {_threshold}." : null;
+}
+
+internal sealed class GreaterThanOrEqualValidator<TModel, TProperty>(string propertyName, TProperty threshold, string? message)
+    : ComparisonValidatorBase<TProperty>(propertyName, threshold, message), IValidator
+{
+    public string? Validate<T>(T value)
+        => value is IComparable comparable && comparable.CompareTo(_threshold) < 0 ? _message ?? $"{_propertyName} must be greater than or equal to {_threshold}." : null;
+}
+
+internal sealed class LessThanOrEqualValidator<TModel, TProperty>(string propertyName, TProperty threshold, string? message)
+    : ComparisonValidatorBase<TProperty>(propertyName, threshold, message), IValidator
+{
+    public string? Validate<T>(T value)
+        => value is IComparable comparable && comparable.CompareTo(_threshold) > 0 ? _message ?? $"{_propertyName} must be less than or equal to {_threshold}." : null;
 }
