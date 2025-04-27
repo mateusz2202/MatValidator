@@ -60,28 +60,28 @@ public static class IComparableRuleBuilderExtensions
 }
 
 internal sealed class GreaterThanValidator<TModel, TProperty>(string propertyName, TProperty threshold, string? message)
-    : ComparisonValidatorBase<TProperty>(propertyName, threshold, message), IValidator
+    : ComparisonValidatorBase<TProperty>(propertyName, threshold, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
         => value is IComparable comparable && comparable.CompareTo(_threshold) <= 0 ? _message ?? $"{_propertyName} must be greater than {_threshold}." : null;
 }
 
 internal sealed class LessThanValidator<TModel, TProperty>(string propertyName, TProperty threshold, string? message)
-    : ComparisonValidatorBase<TProperty>(propertyName, threshold, message), IValidator
+    : ComparisonValidatorBase<TProperty>(propertyName, threshold, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
         => value is IComparable comparable && comparable.CompareTo(_threshold) >= 0 ? _message ?? $"{_propertyName} must be less than {_threshold}." : null;
 }
 
 internal sealed class GreaterThanOrEqualValidator<TModel, TProperty>(string propertyName, TProperty threshold, string? message)
-    : ComparisonValidatorBase<TProperty>(propertyName, threshold, message), IValidator
+    : ComparisonValidatorBase<TProperty>(propertyName, threshold, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
         => value is IComparable comparable && comparable.CompareTo(_threshold) < 0 ? _message ?? $"{_propertyName} must be greater than or equal to {_threshold}." : null;
 }
 
 internal sealed class LessThanOrEqualValidator<TModel, TProperty>(string propertyName, TProperty threshold, string? message)
-    : ComparisonValidatorBase<TProperty>(propertyName, threshold, message), IValidator
+    : ComparisonValidatorBase<TProperty>(propertyName, threshold, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
         => value is IComparable comparable && comparable.CompareTo(_threshold) > 0 ? _message ?? $"{_propertyName} must be less than or equal to {_threshold}." : null;

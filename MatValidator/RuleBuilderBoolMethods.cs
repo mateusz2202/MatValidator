@@ -18,14 +18,14 @@ public static class BoolRuleBuilderExtensions
 }
 
 internal sealed class IsTrueValidator<TModel, TProperty>(string propertyName, string? message)
-     : BaseValidator(propertyName, message), IValidator
+     : BaseValidator(propertyName, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
         => value is bool b && !b ? _message ?? $"{_propertyName} must be true." : null;
 }
 
 internal sealed class IsFalseValidator<TModel, TProperty>(string propertyName, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
         => value is bool b && b ? _message ?? $"{_propertyName} must be false." : null;

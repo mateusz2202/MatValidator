@@ -68,7 +68,7 @@ public static class StringRuleBuilderExtensions
 }
 
 internal sealed class LengthValidator<TModel, TProperty>(string propertyName, int min, int max, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     private readonly int _min = min;
     private readonly int _max = max;
@@ -78,7 +78,7 @@ internal sealed class LengthValidator<TModel, TProperty>(string propertyName, in
 }
 
 internal sealed class MaxLengthValidator<TModel, TProperty>(string propertyName, int max, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     private readonly int _max = max;
 
@@ -87,7 +87,7 @@ internal sealed class MaxLengthValidator<TModel, TProperty>(string propertyName,
 }
 
 internal sealed class MinLengthValidator<TModel, TProperty>(string propertyName, int min, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     private readonly int _min = min;
 
@@ -96,7 +96,7 @@ internal sealed class MinLengthValidator<TModel, TProperty>(string propertyName,
 }
 
 internal sealed class IsEmailValidator<TModel, TProperty>(string propertyName, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
 
     public string? Validate<T>(T value)
@@ -104,7 +104,7 @@ internal sealed class IsEmailValidator<TModel, TProperty>(string propertyName, s
 }
 
 internal sealed class IsUrlValidator<TModel, TProperty>(string propertyName, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
 
     public string? Validate<T>(T value)
@@ -112,21 +112,21 @@ internal sealed class IsUrlValidator<TModel, TProperty>(string propertyName, str
 }
 
 internal sealed class IsAlphaValidator<TModel, TProperty>(string propertyName, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
         => (value is string str && !str.All(char.IsLetter)) ? _message ?? $"{_propertyName} must contain only letters." : null;
 }
 
 internal sealed class IsAlphanumericValidator<TModel, TProperty>(string propertyName, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
         => (value is string str && !str.All(char.IsLetterOrDigit)) ? _message ?? $"{_propertyName} must be alphanumeric." : null;
 }
 
 internal sealed class StartsWithValidator<TModel, TProperty>(string propertyName, string prefix, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     private readonly string _prefix = prefix;
     public string? Validate<T>(T value)
@@ -134,7 +134,7 @@ internal sealed class StartsWithValidator<TModel, TProperty>(string propertyName
 }
 
 internal sealed class EndsWithValidator<TModel, TProperty>(string propertyName, string suffix, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     private readonly string _suffix = suffix;
     public string? Validate<T>(T value)
@@ -142,7 +142,7 @@ internal sealed class EndsWithValidator<TModel, TProperty>(string propertyName, 
 }
 
 internal sealed class MatchesValidator<TModel, TProperty>(string propertyName, string pattern, string? message)
-     : BaseValidator(propertyName, message), IValidator
+     : BaseValidator(propertyName, message), IValidatorProperty
 {
     private readonly string _pattern = pattern;
     public string? Validate<T>(T value)

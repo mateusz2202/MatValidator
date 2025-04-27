@@ -54,7 +54,7 @@ public sealed partial class RuleBuilder<TModel, TProperty> : IValidatorRule
         => AddValidator(new IsInEnumValidator<TModel, TProperty>(_propertyName, message));
 }
 internal sealed class MustValidator<TModel, TProperty>(string propertyName, Func<TProperty, bool> func, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     private readonly Func<TProperty, bool> _func = func;
     public string? Validate<T>(T value)
@@ -62,7 +62,7 @@ internal sealed class MustValidator<TModel, TProperty>(string propertyName, Func
 }
 
 internal sealed class CustomValidator<TModel, TProperty>(string propertyName, Func<bool> func, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     private readonly Func<bool> _func = func;
     public string? Validate<T>(T value)
@@ -70,7 +70,7 @@ internal sealed class CustomValidator<TModel, TProperty>(string propertyName, Fu
 }
 
 internal sealed class SetValidatorValidator<TModel, TProperty>(string propertyName, ValidatorBuilder<TModel> parent, ValidatorBuilder<TProperty> validator, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     private readonly ValidatorBuilder<TProperty> _validator = validator;
     private readonly ValidatorBuilder<TModel> _parent = parent;
@@ -84,7 +84,7 @@ internal sealed class SetValidatorValidator<TModel, TProperty>(string propertyNa
 }
 
 internal sealed class EqualValidator<TModel, TProperty>(string propertyName, TProperty expected, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     private readonly TProperty _expected = expected;
     public string? Validate<T>(T value)
@@ -92,7 +92,7 @@ internal sealed class EqualValidator<TModel, TProperty>(string propertyName, TPr
 }
 
 internal sealed class NotEqualValidator<TModel, TProperty>(string propertyName, TProperty unexpected, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     private readonly TProperty _unexpected = unexpected;
     public string? Validate<T>(T value)
@@ -100,7 +100,7 @@ internal sealed class NotEqualValidator<TModel, TProperty>(string propertyName, 
 }
 
 internal sealed class IsEmptyValidator<TModel, TProperty>(string propertyName, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
     {
@@ -118,7 +118,7 @@ internal sealed class IsEmptyValidator<TModel, TProperty>(string propertyName, s
 }
 
 internal sealed class NotEmptyValidator<TModel, TProperty>(string propertyName, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
     {
@@ -136,21 +136,21 @@ internal sealed class NotEmptyValidator<TModel, TProperty>(string propertyName, 
 }
 
 internal sealed class IsNullValidator<TModel, TProperty>(string propertyName, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
         => value is not null ? _message ?? $"{_propertyName} must be null" : null;
 }
 
 internal sealed class NotNullValidator<TModel, TProperty>(string propertyName, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
         => value is null ? _message ?? $"{_propertyName} cannot be null" : null;
 }
 
 internal sealed class IsInValidator<TModel, TProperty>(string propertyName, IEnumerable<TProperty> list, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     private readonly IEnumerable<TProperty> _list = list;
     public string? Validate<T>(T value)
@@ -158,7 +158,7 @@ internal sealed class IsInValidator<TModel, TProperty>(string propertyName, IEnu
 }
 
 internal sealed class NotInValidator<TModel, TProperty>(string propertyName, IEnumerable<TProperty> list, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     private readonly IEnumerable<TProperty> _list = list;
     public string? Validate<T>(T value)
@@ -166,7 +166,7 @@ internal sealed class NotInValidator<TModel, TProperty>(string propertyName, IEn
 }
 
 internal sealed class OneOfValidator<TModel, TProperty>(string propertyName, params IEnumerable<TProperty> options)
-    : IValidator
+    : IValidatorProperty
 {
     private readonly string _propertyName = propertyName;
     private readonly IEnumerable<TProperty> _options = options;
@@ -176,7 +176,7 @@ internal sealed class OneOfValidator<TModel, TProperty>(string propertyName, par
 }
 
 internal sealed class NoneOfValidator<TModel, TProperty>(string propertyName, params IEnumerable<TProperty> options)
-    : IValidator
+    : IValidatorProperty
 {
     private readonly string _propertyName = propertyName;
     private readonly IEnumerable<TProperty> _options = options;
@@ -186,7 +186,7 @@ internal sealed class NoneOfValidator<TModel, TProperty>(string propertyName, pa
 }
 
 internal sealed class IsInEnumValidator<TModel, TProperty>(string propertyName, string? message)
-     : BaseValidator(propertyName, message), IValidator
+     : BaseValidator(propertyName, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
         => (!Enum.IsDefined(typeof(TProperty), value)) ? $"{_propertyName} must be a valid enum value." : null;

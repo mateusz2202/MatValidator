@@ -15,7 +15,7 @@ public static class IntRuleBuilderExtensions
 }
 
 internal sealed class RangeValidator<TModel, TProperty>(string propertyName, int min, int max, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     private readonly int _min = min;
     private readonly int _max = max;

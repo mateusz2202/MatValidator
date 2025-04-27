@@ -1,6 +1,10 @@
 ﻿namespace MatValidator;
 public interface IValidator
 {
+    ValidResult Validate(object instance);
+}
+public interface IValidatorProperty
+{
     string? Validate<T>(T value);
 }
 public interface IValidatorRule

@@ -12,7 +12,7 @@ public sealed partial class RuleBuilder<TModel, TProperty> : IValidatorRule
     public Predicate<TModel> ShouldValidate { get; private set; } = _ => true;
     public Predicate<TModel> NextCondition { get; private set; } = _ => true;
 
-    private readonly List<IValidator> _validators;
+    private readonly List<IValidatorProperty> _validators;
     private readonly Expression<Func<TModel, TProperty>> _accessor;
 
     public RuleBuilder(ValidatorBuilder<TModel> parent, Expression<Func<TModel, TProperty>> accessor)
@@ -30,7 +30,7 @@ public sealed partial class RuleBuilder<TModel, TProperty> : IValidatorRule
         return this;
     }
 
-    public RuleBuilder<TModel, TProperty> AddValidator(IValidator validator)
+    public RuleBuilder<TModel, TProperty> AddValidator(IValidatorProperty validator)
     {
         _validators.Add(validator);
         NextCondition = _ => true;

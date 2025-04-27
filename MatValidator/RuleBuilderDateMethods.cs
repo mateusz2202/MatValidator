@@ -132,21 +132,21 @@ public static class DateTimeRuleBuilderExtensions
 }
 
 internal sealed class IsInThePastValidator<TModel, TProperty>(string propertyName, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
         => (value is DateTime dt && dt >= DateTime.Now) ? _message ?? $"{_propertyName} must be in the past." : null;
 }
 
 internal sealed class IsInTheFutureValidator<TModel, TProperty>(string propertyName, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
        => (value is DateTime dt && dt <= DateTime.Now) ? _message ?? $"{_propertyName} must be in the future." : null;
 }
 
 internal sealed class IsBeforeValidator<TModel, TProperty>(string propertyName, DateTime? date, string? message)
-        : BaseValidator(propertyName, message), IValidator
+        : BaseValidator(propertyName, message), IValidatorProperty
 {
     private readonly DateTime? _date = date;
     public string? Validate<T>(T value)
@@ -154,14 +154,14 @@ internal sealed class IsBeforeValidator<TModel, TProperty>(string propertyName, 
 }
 
 internal sealed class IsAfterValidator<TModel, TProperty>(string propertyName, DateTime? date, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     private readonly DateTime? _date = date;
     public string? Validate<T>(T value)
         => (value is DateTime dt && dt <= _date) ? _message ?? $"{_propertyName} must be after {_date}." : null;
 }
 internal sealed class IsBetweenValidator<TModel, TProperty>(string propertyName, DateTime? start, DateTime? end, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     private readonly DateTime? _start = start;
     private readonly DateTime? _end = end;
@@ -171,63 +171,63 @@ internal sealed class IsBetweenValidator<TModel, TProperty>(string propertyName,
 }
 
 internal sealed class IsOnWeekendValidator<TModel, TProperty>(string propertyName, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
         => (value is DateTime dt && !(dt.DayOfWeek == DayOfWeek.Saturday || dt.DayOfWeek == DayOfWeek.Sunday)) ? _message ?? $"{_propertyName} must be on a weekend." : null;
 }
 
 internal sealed class IsTodayValidator<TModel, TProperty>(string propertyName, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
         => (value is DateTime dt && dt.Date != DateTime.Now.Date) ? _message ?? $"{_propertyName} must be today's date." : null;
 }
 
 internal sealed class IsMondayValidator<TModel, TProperty>(string propertyName, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
         => (value is DateTime dt && dt.DayOfWeek != DayOfWeek.Monday) ? _message ?? $"{_propertyName} must be on a Monday." : null;
 }
 
 internal sealed class IsTuesdayValidator<TModel, TProperty>(string propertyName, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
         => (value is DateTime dt && dt.DayOfWeek != DayOfWeek.Tuesday) ? _message ?? $"{_propertyName} must be on a Tuesday." : null;
 }
 
 internal sealed class IsWednesdayValidator<TModel, TProperty>(string propertyName, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
         => (value is DateTime dt && dt.DayOfWeek != DayOfWeek.Wednesday) ? _message ?? $"{_propertyName} must be on a Wednesday." : null;
 }
 
 internal sealed class IsThursdayValidator<TModel, TProperty>(string propertyName, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
         => (value is DateTime dt && dt.DayOfWeek != DayOfWeek.Thursday) ? _message ?? $"{_propertyName} must be on a Thursday." : null;
 }
 
 internal sealed class IsFridayValidator<TModel, TProperty>(string propertyName, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
         => (value is DateTime dt && dt.DayOfWeek != DayOfWeek.Friday) ? _message ?? $"{_propertyName} must be on a Friday." : null;
 }
 
 internal sealed class IsSaturdayValidator<TModel, TProperty>(string propertyName, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
         => (value is DateTime dt && dt.DayOfWeek != DayOfWeek.Saturday) ? _message ?? $"{_propertyName} must be on a Saturday." : null;
 }
 
 internal sealed class IsSundayValidator<TModel, TProperty>(string propertyName, string? message)
-    : BaseValidator(propertyName, message), IValidator
+    : BaseValidator(propertyName, message), IValidatorProperty
 {
     public string? Validate<T>(T value)
         => (value is DateTime dt && dt.DayOfWeek != DayOfWeek.Sunday) ? _message ?? $"{_propertyName} must be on a Sunday." : null;

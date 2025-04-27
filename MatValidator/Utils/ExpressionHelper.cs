@@ -17,20 +17,31 @@ public static class ExpressionHelper
 
     public static object GetPropertyValue<T, TProperty>(this T instance, Expression<Func<T, TProperty>> expression)
     {
-        if (expression.Body is MemberExpression memberExpr)
+        if (expression.Body is not MemberExpression memberExpr)
+            throw new InvalidOperationException("Expression must be a member access expression.");
+
+        var memberNames = new Stack<string>();
+        var currentExpr = memberExpr;
+
+        while (currentExpr != null)
         {
-            return memberExpr.Member is not PropertyInfo propInfo
-                ? throw new InvalidOperationException("Expression does not refer to a property.")
-                : propInfo.GetValue(instance);
+            if (currentExpr.Member is not PropertyInfo propInfo)
+                throw new InvalidOperationException("Expression does not refer to a property.");
+
+            memberNames.Push(propInfo.Name);
+            currentExpr = currentExpr.Expression as MemberExpression;
         }
 
-        if (expression.Body is UnaryExpression unaryExpr && unaryExpr.Operand is MemberExpression unaryMemberExpr)
+        object currentValue = instance;
+        foreach (var name in memberNames)
         {
-            return unaryMemberExpr.Member is not PropertyInfo propInfo
-                ? throw new InvalidOperationException("Expression does not refer to a property.")
-                : propInfo.GetValue(instance);
+            if (currentValue == null)
+                return null;
+
+            var prop = currentValue.GetType().GetProperty(name);
+            currentValue = prop.GetValue(currentValue);
         }
 
-        throw new ArgumentException("Invalid expression form");
+        return currentValue;
     }
 }

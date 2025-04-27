@@ -3,7 +3,7 @@
 namespace MatValidator;
 public abstract class AbstractValidator<TModel> : ValidatorBuilder<TModel> { }
 
-public class ValidatorBuilder<TModel>
+public class ValidatorBuilder<TModel> : IValidator
 {
     public readonly ValidResult ValidResult;
     private readonly List<IValidatorRule> _rules;
@@ -14,10 +14,15 @@ public class ValidatorBuilder<TModel>
         ValidResult = new([]);
     }
 
-    public ValidResult Validate(TModel model)
+    public ValidResult Validate(object instance)
     {
-        ValidResult.ErrorMessages.AddRange(_rules.SelectMany(rule => rule.Validate(model)));
-        return ValidResult;
+        if (instance is TModel model)
+        {
+            ValidResult.ErrorMessages.AddRange(_rules.SelectMany(rule => rule.Validate(model)));
+            return ValidResult;
+        }
+
+        throw new InvalidOperationException($"Invalid model type: expected {typeof(TModel).Name}, got {instance.GetType().Name}");
     }
 
 
