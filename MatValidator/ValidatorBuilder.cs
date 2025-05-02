@@ -35,4 +35,9 @@ public class ValidatorBuilder<TModel> : IValidator
         return rule;
     }
 
+
+    public void Include<T>(ValidatorBuilder<T> validator)
+    {
+        _rules.AddRange(validator._rules);
+    }
 }
