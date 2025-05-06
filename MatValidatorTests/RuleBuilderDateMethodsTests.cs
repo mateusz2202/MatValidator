@@ -31,7 +31,7 @@ public class RuleBuilderDateMethodsTests
     }
 
     [Fact]
-    public void IsInThePast_ShouldValidatePastDates()
+    public async Task IsInThePast_ShouldValidatePastDates()
     {
         // Arrange
         var futureDate = DateTime.Now.AddDays(1);
@@ -43,7 +43,7 @@ public class RuleBuilderDateMethodsTests
             .IsInThePast("Start date must be in the past.");
 
         // Act
-        var result = validator.Validate(@event);
+        var result = await validator.ValidateAsync(@event, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -53,7 +53,7 @@ public class RuleBuilderDateMethodsTests
     }
 
     [Fact]
-    public void IsInTheFuture_ShouldValidateFutureDates()
+    public async Task IsInTheFuture_ShouldValidateFutureDates()
     {
         // Arrange
         var pastDate = DateTime.Now.AddDays(-1);
@@ -65,7 +65,7 @@ public class RuleBuilderDateMethodsTests
             .IsInTheFuture("End date must be in the future.");
 
         // Act
-        var result = validator.Validate(@event);
+        var result = await validator.ValidateAsync(@event, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -75,7 +75,7 @@ public class RuleBuilderDateMethodsTests
     }
 
     [Fact]
-    public void IsBefore_ShouldValidateDatesBeforeReference()
+    public async Task IsBefore_ShouldValidateDatesBeforeReference()
     {
         // Arrange
         var referenceDate = DateTime.Now.AddDays(5);
@@ -87,7 +87,7 @@ public class RuleBuilderDateMethodsTests
             .IsBefore(referenceDate, "Start date must be before reference date.");
 
         // Act
-        var result = validator.Validate(@event);
+        var result = await validator.ValidateAsync(@event, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -97,7 +97,7 @@ public class RuleBuilderDateMethodsTests
     }
 
     [Fact]
-    public void IsAfter_ShouldValidateDatesAfterReference()
+    public async Task IsAfter_ShouldValidateDatesAfterReference()
     {
         // Arrange
         var referenceDate = DateTime.Now.AddDays(-5);
@@ -109,7 +109,7 @@ public class RuleBuilderDateMethodsTests
             .IsAfter(referenceDate, "End date must be after reference date.");
 
         // Act
-        var result = validator.Validate(@event);
+        var result = await validator.ValidateAsync(@event, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -119,7 +119,7 @@ public class RuleBuilderDateMethodsTests
     }
 
     [Fact]
-    public void IsBetween_ShouldValidateDatesInRange()
+    public async Task IsBetween_ShouldValidateDatesInRange()
     {
         // Arrange
         var startRange = DateTime.Now.AddDays(-10);
@@ -132,7 +132,7 @@ public class RuleBuilderDateMethodsTests
             .IsBetween(startRange, endRange, "Registration deadline must be within the specified range.");
 
         // Act
-        var result = validator.Validate(@event);
+        var result = await validator.ValidateAsync(@event, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -142,7 +142,7 @@ public class RuleBuilderDateMethodsTests
     }
 
     [Fact]
-    public void IsOnWeekend_ShouldValidateWeekendDates()
+    public async Task IsOnWeekend_ShouldValidateWeekendDates()
     {
         // Arrange - Create a known weekday date (not Saturday or Sunday)
         var weekdayDate = new DateTime(2023, 10, 4); // Wednesday
@@ -154,7 +154,7 @@ public class RuleBuilderDateMethodsTests
             .IsOnWeekend("Special day must be on a weekend.");
 
         // Act
-        var result = validator.Validate(@event);
+        var result = await validator.ValidateAsync(@event, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -164,7 +164,7 @@ public class RuleBuilderDateMethodsTests
     }
 
     [Fact]
-    public void IsToday_ShouldValidateCurrentDate()
+    public async Task IsToday_ShouldValidateCurrentDate()
     {
         // Arrange
         var notToday = DateTime.Now.AddDays(1);
@@ -176,7 +176,7 @@ public class RuleBuilderDateMethodsTests
             .IsToday("Special day must be today.");
 
         // Act
-        var result = validator.Validate(@event);
+        var result = await validator.ValidateAsync(@event, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -193,7 +193,7 @@ public class RuleBuilderDateMethodsTests
     [InlineData(DayOfWeek.Friday)]
     [InlineData(DayOfWeek.Saturday)]
     [InlineData(DayOfWeek.Sunday)]
-    public void SpecificDayOfWeek_ShouldValidateCorrectDay(DayOfWeek dayOfWeek)
+    public async Task SpecificDayOfWeek_ShouldValidateCorrectDay(DayOfWeek dayOfWeek)
     {
         // Arrange
         var testDate = GetNextWeekday(((int)dayOfWeek + 1) == 7 ? 0 : dayOfWeek + 1);
@@ -226,7 +226,7 @@ public class RuleBuilderDateMethodsTests
         }
 
         // Act
-        var result = validator.Validate(@event);
+        var result = await validator.ValidateAsync(@event, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -236,7 +236,7 @@ public class RuleBuilderDateMethodsTests
     }
 
     [Fact]
-    public void CombinedDateValidations_ShouldWorkTogether()
+    public async Task CombinedDateValidations_ShouldWorkTogether()
     {
         // Arrange
         var @event = new Event(
@@ -266,7 +266,7 @@ public class RuleBuilderDateMethodsTests
             .IsToday("Special day must be today.");
 
         // Act
-        var result = validator.Validate(@event);
+        var result = await validator.ValidateAsync(@event, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert

@@ -1,15 +1,27 @@
-﻿namespace MatValidator;
+﻿using System.Runtime.CompilerServices;
+
+namespace MatValidator;
+
 public interface IValidator
 {
-    ValidResult Validate(object instance);
+    Task<ValidResult> ValidateAsync(object instance, CancellationToken cancellationToken = default);
 }
-public interface IValidatorProperty
+
+public interface IValidatorBaseProperty { }
+
+public interface IValidatorProperty : IValidatorBaseProperty
 {
     string? Validate<T>(T value);
 }
+
+public interface IValidatorAsyncProperty : IValidatorBaseProperty
+{
+    Task<string?> ValidateAsync<T>(T value, CancellationToken cancellationToken);
+}
+
 public interface IValidatorRule
 {
-    IEnumerable<string> Validate<T>(T model);
+    IAsyncEnumerable<string> ValidateAsync<T>(T model, CancellationToken cancellationToken = default);
 }
 
 internal class BaseValidator

@@ -14,15 +14,22 @@ public class ValidatorBuilder<TModel> : IValidator
         ValidResult = new([]);
     }
 
-    public ValidResult Validate(object instance)
+    public async Task<ValidResult> ValidateAsync(object instance, CancellationToken cancellationToken = default)
     {
-        if (instance is TModel model)
+        if (instance is not TModel model)
+            throw new InvalidOperationException($"Invalid model type: expected {typeof(TModel).Name}, got {instance.GetType().Name}");
+
+
+        foreach (var rule in _rules)
         {
-            ValidResult.ErrorMessages.AddRange(_rules.SelectMany(rule => rule.Validate(model)));
-            return ValidResult;
+            await foreach (var error in rule.ValidateAsync(model, cancellationToken))
+            {
+                if (!string.IsNullOrWhiteSpace(error))
+                    ValidResult.ErrorMessages.Add(error);
+            }
         }
 
-        throw new InvalidOperationException($"Invalid model type: expected {typeof(TModel).Name}, got {instance.GetType().Name}");
+        return ValidResult;
     }
 
 
@@ -40,4 +47,5 @@ public class ValidatorBuilder<TModel> : IValidator
     {
         _rules.AddRange(validator._rules);
     }
+
 }

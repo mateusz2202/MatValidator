@@ -27,7 +27,7 @@ public class RuleBuilderBoolMethodsTests
     }
 
     [Fact]
-    public void IsTrue_ShouldValidateBooleanTrue()
+    public async Task IsTrue_ShouldValidateBooleanTrue()
     {
         // Arrange
         var model = new TestModel { IsActive = false };
@@ -38,7 +38,7 @@ public class RuleBuilderBoolMethodsTests
             .IsTrue("IsActive must be true.");
 
         // Act
-        var result = validator.Validate(model);
+        var result = await validator.ValidateAsync(model, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -48,7 +48,7 @@ public class RuleBuilderBoolMethodsTests
     }
 
     [Fact]
-    public void IsFalse_ShouldValidateBooleanFalse()
+    public async Task IsFalse_ShouldValidateBooleanFalse()
     {
         // Arrange
         var model = new TestModel { IsDeleted = true };
@@ -59,7 +59,7 @@ public class RuleBuilderBoolMethodsTests
             .IsFalse("IsDeleted must be false.");
 
         // Act
-        var result = validator.Validate(model);
+        var result = await validator.ValidateAsync(model, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert

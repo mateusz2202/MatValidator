@@ -17,7 +17,7 @@ public class RuleBuilderStringMethodsTests
     }
 
     [Fact()]
-    public void ValidateFalseTest()
+    public async Task ValidateFalseTest()
     {
         var user = new User("", "janXd", 200, new(""));
 
@@ -48,7 +48,7 @@ public class RuleBuilderStringMethodsTests
             .SetValidator(validator2);
 
 
-        var result = validator.Validate(user);
+        var result = await validator.ValidateAsync(user, CancellationToken.None);
 
         var jsonResult = JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray()));
 
@@ -58,7 +58,7 @@ public class RuleBuilderStringMethodsTests
     }
 
     [Fact()]
-    public void ValidateTrueTest()
+    public async Task ValidateTrueTest()
     {
         var user = new User("Jan", "jan@gmail.com", 35, new("info"));
 
@@ -89,7 +89,7 @@ public class RuleBuilderStringMethodsTests
             .SetValidator(validator2);
 
 
-        var result = validator.Validate(user);
+        var result = await validator.ValidateAsync(user, CancellationToken.None);
 
         var jsonResult = JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray()));
 
@@ -98,7 +98,7 @@ public class RuleBuilderStringMethodsTests
         Assert.True(result.IsValid);
     }
     [Fact]
-    public void Length_ShouldValidateStringLength()
+    public async Task Length_ShouldValidateStringLength()
     {
         // Arrange
         var user = new User("Test", "test@example.com", 30, new UserInfo("info"));
@@ -109,7 +109,7 @@ public class RuleBuilderStringMethodsTests
             .Length(5, 10, "FirstName must be between 5 and 10 characters.");
 
         // Act
-        var result = validator.Validate(user);
+        var result = await validator.ValidateAsync(user, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -119,7 +119,7 @@ public class RuleBuilderStringMethodsTests
     }
 
     [Fact]
-    public void MaxLength_ShouldValidateMaximumStringLength()
+    public async Task MaxLength_ShouldValidateMaximumStringLength()
     {
         // Arrange
         var user = new User("TooLongName", "test@example.com", 30, new UserInfo("info"));
@@ -130,7 +130,7 @@ public class RuleBuilderStringMethodsTests
             .MaxLength(5, "FirstName must be at most 5 characters.");
 
         // Act
-        var result = validator.Validate(user);
+        var result = await validator.ValidateAsync(user, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -140,7 +140,7 @@ public class RuleBuilderStringMethodsTests
     }
 
     [Fact]
-    public void MinLength_ShouldValidateMinimumStringLength()
+    public async Task MinLength_ShouldValidateMinimumStringLength()
     {
         // Arrange
         var user = new User("A", "test@example.com", 30, new UserInfo("info"));
@@ -151,7 +151,7 @@ public class RuleBuilderStringMethodsTests
             .MinLength(2, "FirstName must be at least 2 characters.");
 
         // Act
-        var result = validator.Validate(user);
+        var result = await validator.ValidateAsync(user, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -161,7 +161,7 @@ public class RuleBuilderStringMethodsTests
     }
 
     [Fact]
-    public void IsEmail_ShouldValidateEmailFormat()
+    public async Task IsEmail_ShouldValidateEmailFormat()
     {
         // Arrange
         var user = new User("John", "invalid-email", 30, new UserInfo("info"));
@@ -172,7 +172,7 @@ public class RuleBuilderStringMethodsTests
             .IsEmail("Invalid email format.");
 
         // Act
-        var result = validator.Validate(user);
+        var result = await validator.ValidateAsync(user, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -182,7 +182,7 @@ public class RuleBuilderStringMethodsTests
     }
 
     [Fact]
-    public void IsUrl_ShouldValidateUrlFormat()
+    public async Task IsUrl_ShouldValidateUrlFormat()
     {
         // Arrange
         var user = new User("John", "test@example.com", 30, new UserInfo("invalid-url"));
@@ -198,7 +198,7 @@ public class RuleBuilderStringMethodsTests
             .SetValidator(userInfoValidator);
 
         // Act
-        var result = validator.Validate(user);
+        var result = await validator.ValidateAsync(user, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -208,7 +208,7 @@ public class RuleBuilderStringMethodsTests
     }
 
     [Fact]
-    public void IsAlpha_ShouldValidateAlphabeticCharacters()
+    public async Task IsAlpha_ShouldValidateAlphabeticCharacters()
     {
         // Arrange
         var user = new User("John123", "test@example.com", 30, new UserInfo("info"));
@@ -219,7 +219,7 @@ public class RuleBuilderStringMethodsTests
             .IsAlpha("FirstName must contain only letters.");
 
         // Act
-        var result = validator.Validate(user);
+        var result = await validator.ValidateAsync(user, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -229,7 +229,7 @@ public class RuleBuilderStringMethodsTests
     }
 
     [Fact]
-    public void IsAlphanumeric_ShouldValidateAlphanumericCharacters()
+    public async Task IsAlphanumeric_ShouldValidateAlphanumericCharacters()
     {
         // Arrange
         var user = new User("John@Doe", "test@example.com", 30, new UserInfo("info"));
@@ -240,7 +240,7 @@ public class RuleBuilderStringMethodsTests
             .IsAlphanumeric("FirstName must be alphanumeric.");
 
         // Act
-        var result = validator.Validate(user);
+        var result = await validator.ValidateAsync(user, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -250,7 +250,7 @@ public class RuleBuilderStringMethodsTests
     }
 
     [Fact]
-    public void StartsWith_ShouldValidateStringPrefix()
+    public async Task StartsWith_ShouldValidateStringPrefix()
     {
         // Arrange
         var user = new User("JohnDoe", "test@example.com", 30, new UserInfo("info"));
@@ -261,7 +261,7 @@ public class RuleBuilderStringMethodsTests
             .StartsWith("Mr", "FirstName must start with 'Mr'.");
 
         // Act
-        var result = validator.Validate(user);
+        var result = await validator.ValidateAsync(user, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -271,7 +271,7 @@ public class RuleBuilderStringMethodsTests
     }
 
     [Fact]
-    public void EndsWith_ShouldValidateStringSuffix()
+    public async Task EndsWith_ShouldValidateStringSuffix()
     {
         // Arrange
         var user = new User("JohnDoe", "test@example.com", 30, new UserInfo("info"));
@@ -282,7 +282,7 @@ public class RuleBuilderStringMethodsTests
             .EndsWith("Smith", "FirstName must end with 'Smith'.");
 
         // Act
-        var result = validator.Validate(user);
+        var result = await validator.ValidateAsync(user, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -292,7 +292,7 @@ public class RuleBuilderStringMethodsTests
     }
 
     [Fact]
-    public void Matches_ShouldValidateRegexPattern()
+    public async Task Matches_ShouldValidateRegexPattern()
     {
         // Arrange
         var user = new User("JohnDoe", "test@example.com", 30, new UserInfo("info"));
@@ -303,7 +303,7 @@ public class RuleBuilderStringMethodsTests
             .Matches(@"^[A-Z][a-z]+$", "FirstName must start with capital letter followed by lowercase letters.");
 
         // Act
-        var result = validator.Validate(user);
+        var result = await validator.ValidateAsync(user, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -313,7 +313,7 @@ public class RuleBuilderStringMethodsTests
     }
 
     [Fact]
-    public void CombinedValidations_ShouldWorkTogether()
+    public async Task CombinedValidations_ShouldWorkTogether()
     {
         // Arrange
         var user = new User("A", "invalid-email", 200, new UserInfo(""));
@@ -342,7 +342,7 @@ public class RuleBuilderStringMethodsTests
             .SetValidator(userInfoValidator);
 
         // Act
-        var result = validator.Validate(user);
+        var result = await validator.ValidateAsync(user, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert

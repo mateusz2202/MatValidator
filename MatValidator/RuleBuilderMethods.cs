@@ -1,12 +1,18 @@
 ﻿namespace MatValidator;
+
 public sealed partial class RuleBuilder<TModel, TProperty> : IValidatorRule
 {
     public RuleBuilder<TModel, TProperty> Must(Func<TProperty, bool> func, string message = null)
         => AddValidator(new MustValidator<TModel, TProperty>(_propertyName, func, message));
 
+    public RuleBuilder<TModel, TProperty> MustAsync(Func<TProperty, CancellationToken, Task<bool>> func, string message = null)
+        => AddValidator(new MustValidatorAsync<TModel, TProperty>(_propertyName, func, message));
+
     public RuleBuilder<TModel, TProperty> Custom(Func<bool> func, string message = null)
         => AddValidator(new CustomValidator<TModel, TProperty>(_propertyName, func, message));
 
+    public RuleBuilder<TModel, TProperty> CustomAsync(Func<CancellationToken, Task<bool>> func, string message = null)
+     => AddValidator(new CustomValidatorAsync<TModel, TProperty>(_propertyName, func, message));
 
     public RuleBuilder<TModel, TProperty> SetValidator(ValidatorBuilder<TProperty> validator)
         => AddValidator(new SetValidatorValidator<TModel, TProperty>(_propertyName, _parent, validator, null));
@@ -61,6 +67,15 @@ internal sealed class MustValidator<TModel, TProperty>(string propertyName, Func
         => (value is TProperty v && !_func(v)) ? _message ?? $"{_propertyName} is not valid." : null;
 }
 
+internal sealed class MustValidatorAsync<TModel, TProperty>(string propertyName, Func<TProperty, CancellationToken, Task<bool>> func, string? message)
+    : BaseValidator(propertyName, message), IValidatorAsyncProperty
+{
+    private readonly Func<TProperty, CancellationToken, Task<bool>> _func = func;
+
+    public async Task<string?> ValidateAsync<T>(T value, CancellationToken cancellationToken)
+     => (value is TProperty v && !(await _func(v, cancellationToken))) ? _message ?? $"{_propertyName} is not valid." : null;
+}
+
 internal sealed class CustomValidator<TModel, TProperty>(string propertyName, Func<bool> func, string? message)
     : BaseValidator(propertyName, message), IValidatorProperty
 {
@@ -69,15 +84,24 @@ internal sealed class CustomValidator<TModel, TProperty>(string propertyName, Fu
         => (!_func.Invoke()) ? _message ?? $"{_propertyName} is not valid." : null;
 }
 
+internal sealed class CustomValidatorAsync<TModel, TProperty>(string propertyName, Func<CancellationToken, Task<bool>> func, string? message)
+    : BaseValidator(propertyName, message), IValidatorAsyncProperty
+{
+    private readonly Func<CancellationToken, Task<bool>> _func = func;
+    public async Task<string?> ValidateAsync<T>(T value, CancellationToken cancellationToken)
+        => (!(await _func.Invoke(cancellationToken))) ? _message ?? $"{_propertyName} is not valid." : null;
+}
+
 internal sealed class SetValidatorValidator<TModel, TProperty>(string propertyName, ValidatorBuilder<TModel> parent, ValidatorBuilder<TProperty> validator, string? message)
-    : BaseValidator(propertyName, message), IValidatorProperty
+    : BaseValidator(propertyName, message), IValidatorAsyncProperty
 {
     private readonly ValidatorBuilder<TProperty> _validator = validator;
     private readonly ValidatorBuilder<TModel> _parent = parent;
-    public string? Validate<T>(T value)
+
+    public async Task<string?> ValidateAsync<T>(T value, CancellationToken cancellationToken)
     {
-        if (value is TProperty property)
-            _parent.ValidResult.ErrorMessages.AddRange(_validator.Validate(property).ErrorMessages);
+        if (value is TProperty instance)
+            _parent.ValidResult.ErrorMessages.AddRange((await _validator.ValidateAsync(instance, CancellationToken.None)).ErrorMessages);
 
         return null;
     }

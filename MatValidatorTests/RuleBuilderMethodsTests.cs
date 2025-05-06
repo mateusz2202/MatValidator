@@ -30,7 +30,7 @@ public class RuleBuilderMethodsTests
         _output = output;
     }
     [Fact]
-    public void Must_ShouldValidateCustomCondition()
+    public async Task Must_ShouldValidateCustomCondition()
     {
         // Arrange
         var model = new TestModel { Name = "test" };
@@ -41,7 +41,7 @@ public class RuleBuilderMethodsTests
             .Must(name => name == "valid", "Name must be 'valid'.");
 
         // Act
-        var result = validator.Validate(model);
+        var result = await validator.ValidateAsync(model, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -51,7 +51,7 @@ public class RuleBuilderMethodsTests
     }
 
     [Fact]
-    public void Custom_ShouldValidateCustomFunction()
+    public async Task Custom_ShouldValidateCustomFunction()
     {
         // Arrange
         var model = new TestModel();
@@ -62,7 +62,7 @@ public class RuleBuilderMethodsTests
             .Custom(() => false, "Custom validation failed.");
 
         // Act
-        var result = validator.Validate(model);
+        var result = await validator.ValidateAsync(model, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -72,7 +72,7 @@ public class RuleBuilderMethodsTests
     }
 
     [Fact]
-    public void OverridePropertyName_ShouldChangePropertyNameInMessages()
+    public async Task OverridePropertyName_ShouldChangePropertyNameInMessages()
     {
         // Arrange
         var model = new TestModel { Name = null };
@@ -84,7 +84,7 @@ public class RuleBuilderMethodsTests
             .NotNull("Field is required.");
 
         // Act
-        var result = validator.Validate(model);
+        var result = await validator.ValidateAsync(model, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -95,7 +95,7 @@ public class RuleBuilderMethodsTests
 
 
     [Fact]
-    public void Equal_ShouldValidateEquality()
+    public async Task Equal_ShouldValidateEquality()
     {
         // Arrange
         var model = new TestModel { Status = "pending" };
@@ -106,7 +106,7 @@ public class RuleBuilderMethodsTests
             .Equal("approved", "Status must be 'approved'.");
 
         // Act
-        var result = validator.Validate(model);
+        var result = await validator.ValidateAsync(model, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -116,7 +116,7 @@ public class RuleBuilderMethodsTests
     }
 
     [Fact]
-    public void NotEqual_ShouldValidateInequality()
+    public async Task NotEqual_ShouldValidateInequality()
     {
         // Arrange
         var model = new TestModel { Status = "invalid" };
@@ -127,7 +127,7 @@ public class RuleBuilderMethodsTests
             .NotEqual("invalid", "Status must not be 'invalid'.");
 
         // Act
-        var result = validator.Validate(model);
+        var result = await validator.ValidateAsync(model, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -137,7 +137,7 @@ public class RuleBuilderMethodsTests
     }
 
     [Fact]
-    public void IsEmpty_ShouldValidateEmptyValues()
+    public async Task IsEmpty_ShouldValidateEmptyValues()
     {
         // Arrange
         var model = new TestModel { Name = "not empty", Tags = new List<string> { "tag" } };
@@ -151,7 +151,7 @@ public class RuleBuilderMethodsTests
             .IsEmpty("Tags must be empty.");
 
         // Act
-        var result = validator.Validate(model);
+        var result = await validator.ValidateAsync(model, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -160,7 +160,7 @@ public class RuleBuilderMethodsTests
     }
 
     [Fact]
-    public void NotEmpty_ShouldValidateNonEmptyValues()
+    public async Task NotEmpty_ShouldValidateNonEmptyValues()
     {
         // Arrange
         var model = new TestModel { Name = null, Tags = new List<string>() };
@@ -174,7 +174,7 @@ public class RuleBuilderMethodsTests
             .NotEmpty("Tags are required.");
 
         // Act
-        var result = validator.Validate(model);
+        var result = await validator.ValidateAsync(model, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -183,7 +183,7 @@ public class RuleBuilderMethodsTests
     }
 
     [Fact]
-    public void IsNull_ShouldValidateNullValues()
+    public async Task IsNull_ShouldValidateNullValues()
     {
         // Arrange
         var model = new TestModel { Name = "not null" };
@@ -194,7 +194,7 @@ public class RuleBuilderMethodsTests
             .IsNull("Name must be null.");
 
         // Act
-        var result = validator.Validate(model);
+        var result = await validator.ValidateAsync(model, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -204,7 +204,7 @@ public class RuleBuilderMethodsTests
     }
 
     [Fact]
-    public void NotNull_ShouldValidateNonNullValues()
+    public async Task NotNull_ShouldValidateNonNullValues()
     {
         // Arrange
         var model = new TestModel { Name = null };
@@ -215,7 +215,7 @@ public class RuleBuilderMethodsTests
             .NotNull("Name is required.");
 
         // Act
-        var result = validator.Validate(model);
+        var result = await validator.ValidateAsync(model, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -225,7 +225,7 @@ public class RuleBuilderMethodsTests
     }
 
     [Fact]
-    public void IsIn_ShouldValidateListMembership()
+    public async Task IsIn_ShouldValidateListMembership()
     {
         // Arrange
         var model = new TestModel { Status = "invalid" };
@@ -237,7 +237,7 @@ public class RuleBuilderMethodsTests
             .IsIn(validStatuses, "Status must be one of: active, inactive, pending.");
 
         // Act
-        var result = validator.Validate(model);
+        var result = await validator.ValidateAsync(model, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -247,7 +247,7 @@ public class RuleBuilderMethodsTests
     }
 
     [Fact]
-    public void NotIn_ShouldValidateListNonMembership()
+    public async Task NotIn_ShouldValidateListNonMembership()
     {
         // Arrange
         var model = new TestModel { Status = "banned" };
@@ -259,7 +259,7 @@ public class RuleBuilderMethodsTests
             .NotIn(invalidStatuses, "Status must not be banned or suspended.");
 
         // Act
-        var result = validator.Validate(model);
+        var result = await validator.ValidateAsync(model, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -269,7 +269,7 @@ public class RuleBuilderMethodsTests
     }
 
     [Fact]
-    public void OneOf_ShouldValidateMultipleOptions()
+    public async Task OneOf_ShouldValidateMultipleOptions()
     {
         // Arrange
         var model = new TestModel { Status = "invalid" };
@@ -280,7 +280,7 @@ public class RuleBuilderMethodsTests
             .OneOf(["active", "inactive"]);
 
         // Act
-        var result = validator.Validate(model);
+        var result = await validator.ValidateAsync(model, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -289,7 +289,7 @@ public class RuleBuilderMethodsTests
     }
 
     [Fact]
-    public void NoneOf_ShouldValidateAgainstMultipleOptions()
+    public async Task NoneOf_ShouldValidateAgainstMultipleOptions()
     {
         // Arrange
         var model = new TestModel { Status = "banned" };
@@ -300,7 +300,7 @@ public class RuleBuilderMethodsTests
             .NoneOf(["banned", "suspended"]);
 
         // Act
-        var result = validator.Validate(model);
+        var result = await validator.ValidateAsync(model, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -309,7 +309,7 @@ public class RuleBuilderMethodsTests
     }
 
     [Fact]
-    public void IsInEnum_ShouldValidateEnumValues()
+    public async Task IsInEnum_ShouldValidateEnumValues()
     {
         // Arrange
         var model = new TestModel { Role = (UserRole)99 };
@@ -320,7 +320,7 @@ public class RuleBuilderMethodsTests
             .IsInEnum("Role must be a valid enum value.");
 
         // Act
-        var result = validator.Validate(model);
+        var result = await validator.ValidateAsync(model, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -330,7 +330,7 @@ public class RuleBuilderMethodsTests
     }
 
     [Fact]
-    public void CombinedValidations_ShouldWorkTogether()
+    public async Task CombinedValidations_ShouldWorkTogether()
     {
         // Arrange
         var model = new TestModel
@@ -363,7 +363,7 @@ public class RuleBuilderMethodsTests
 
 
         // Act
-        var result = validator.Validate(model);
+        var result = await validator.ValidateAsync(model, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert

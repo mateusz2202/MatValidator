@@ -52,7 +52,7 @@ validator
     .SetValidator(validator2);
 
 
-var result = validator.Validate(user);
+var result = await validator.ValidateAsync(user, CancellationToken.None);
 Console.WriteLine(result.IsValid);
 Console.WriteLine(string.Join($",{Environment.NewLine}", result.ErrorMessages));
 
@@ -60,7 +60,7 @@ Console.WriteLine("------------sample with class---------");
 
 var userValidator = new UserValidator();
 
-result = userValidator.Validate(user);
+result = await userValidator.ValidateAsync(user, CancellationToken.None);
 Console.WriteLine(result.IsValid);
 Console.WriteLine(string.Join($",{Environment.NewLine}", result.ErrorMessages));
 

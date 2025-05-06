@@ -27,7 +27,7 @@ public class RuleBuilderComparableMethodsTests
     }
 
     [Fact]
-    public void GreaterThan_ShouldValidateNumbers()
+    public async Task GreaterThan_ShouldValidateNumbers()
     {
         // Arrange
         var model = new TestModel { Age = 17 };
@@ -38,7 +38,7 @@ public class RuleBuilderComparableMethodsTests
             .GreaterThan(18, "Age must be greater than 18.");
 
         // Act
-        var result = validator.Validate(model);
+        var result = await validator.ValidateAsync(model, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -48,7 +48,7 @@ public class RuleBuilderComparableMethodsTests
     }
 
     [Fact]
-    public void LessThan_ShouldValidateNumbers()
+    public async Task LessThan_ShouldValidateNumbers()
     {
         // Arrange
         var model = new TestModel { Price = 100.01m };
@@ -59,7 +59,7 @@ public class RuleBuilderComparableMethodsTests
             .LessThan(100, "Price must be less than 100.");
 
         // Act
-        var result = validator.Validate(model);
+        var result = await validator.ValidateAsync(model, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -69,7 +69,7 @@ public class RuleBuilderComparableMethodsTests
     }
 
     [Fact]
-    public void GreaterThanOrEqual_ShouldValidateNumbers()
+    public async Task GreaterThanOrEqual_ShouldValidateNumbers()
     {
         // Arrange
         var model = new TestModel { Age = 17 };
@@ -80,7 +80,7 @@ public class RuleBuilderComparableMethodsTests
             .GreaterThanOrEqual(18, "Age must be at least 18.");
 
         // Act
-        var result = validator.Validate(model);
+        var result = await validator.ValidateAsync(model, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert
@@ -90,7 +90,7 @@ public class RuleBuilderComparableMethodsTests
     }
 
     [Fact]
-    public void LessThanOrEqual_ShouldValidateNumbers()
+    public async Task LessThanOrEqual_ShouldValidateNumbers()
     {
         // Arrange
         var model = new TestModel { Price = 100.01m };
@@ -101,7 +101,7 @@ public class RuleBuilderComparableMethodsTests
             .LessThanOrEqual(100, "Price must be at most 100.");
 
         // Act
-        var result = validator.Validate(model);
+        var result = await validator.ValidateAsync(model, CancellationToken.None);
         _output.WriteLine(JsonSerializer.Serialize((result.IsValid, result.ErrorMessages.ToArray())));
 
         // Assert

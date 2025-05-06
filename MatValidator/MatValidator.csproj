@@ -10,7 +10,7 @@
 
   <PropertyGroup>
     <PackageId>MatValidator</PackageId>
-    <Version>1.2.6</Version>
+    <Version>1.3.1</Version>
     <Authors>MJ</Authors>
     <Company>Mat</Company>
     <RepositoryUrl>https://github.com/mateusz2202/MatValidator</RepositoryUrl>
